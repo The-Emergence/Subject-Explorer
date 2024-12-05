@@ -1,0 +1,160 @@
+/* Basic tile styling */
+.tile {
+    width: 200px;
+    height: 220px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end; /* Push content to the bottom */
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+    background: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Badge styling */
+.person-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+   background: linear-gradient(to right, #2f4f4f, #6d8484);
+    border-radius: 4px;
+}
+.provider-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+  background: linear-gradient(to right, #2f4f4f, #6d8484);
+    border-radius: 4px;
+}
+.product-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+ background: linear-gradient(to right, #2f4f4f, #6d8484);
+    border-radius: 4px;
+}
+.insight-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+  background: linear-gradient(to right, #2f4f4f, #6d8484);
+    border-radius: 4px;
+}
+
+/* Grouping text styling for bottom alignment */
+.tile .text-group {
+    margin-bottom: 15px; /* Adds spacing from the bottom */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Word styles */
+.word {
+    margin: 5px 0;
+    font-family: Arial, sans-serif;
+    position: relative; /* Required for pseudo-elements */
+    padding-left: 15px; /* Space for left bar */
+    padding-right: 15px; /* Space for right bar */
+}
+
+/* Alternating bar placements */
+
+/* Subject: Left bar */
+.subject::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 100%;
+    background-color: #2a9d8f; /* Green for Subject */
+}
+
+/* Predicate: Right bar */
+.predicate::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 100%;
+    background-color: #e76f51; /* Orange for Predicate */
+}
+
+/* Object: Left bar */
+.object::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 100%;
+    background-color: #264653; /* Dark Blue for Object */
+}
+
+/* Type: Right bar */
+.type::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 100%;
+    background-color: #f4a261; /* Golden Yellow for Type */
+}
+
+/* Subtype: Left bar */
+.subtype::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 100%;
+    background-color: #e9c46a; /* Light Yellow for Subtype */
+}
+
+/* Relationship: Right bar */
+.relationship::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 100%;
+    background-color: #457b9d; /* Cool Blue for Relationship */
+}
+
+/* Hover effect for better visibility */
+.tile:hover {
+    background: #fff;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
