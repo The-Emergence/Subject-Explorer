@@ -38,15 +38,33 @@ main {
 }
 
 #attractor-space {
-  width: 100%;
-  height: 600px; /* Adjustable height */
+  position: relative;
+  width: 400px; /* Define size of the radial area */
+  height: 400px;
+  margin: 50px auto;
   border: 2px dashed #aaa;
-  background-color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #888;
-  font-size: 18px;
-  text-align: center;
+  border-radius: 50%; /* Makes the section a circle */
+  background-color: #f9f9f9;
 }
+
+.radial-item {
+  position: absolute;
+  top: 50%; /* Start at the center of the circle */
+  left: 50%;
+  transform-origin: center; /* Rotate around the center */
+  transform: translate(-50%, -50%) rotate(calc(var(--angle) * 1deg)) translate(150px); /* Position on the circle */
+}
+
+.radial-item:nth-child(1) {
+  --angle: 0; /* Position this item at 0 degrees */
+}
+
+.radial-item:nth-child(2) {
+  --angle: 120; /* Position this item at 120 degrees */
+}
+
+.radial-item:nth-child(3) {
+  --angle: 240; /* Position this item at 240 degrees */
+}
+
 
