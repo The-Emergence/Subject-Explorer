@@ -38,31 +38,25 @@ main {
 }
 
 #attractor-space {
-  position: relative;
-  width: 400px; /* Circle size */
-  height: 400px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Flexible columns */
+  gap: 20px; /* Spacing between grid items */
+  width: 400px;
   margin: 50px auto;
+  padding: 20px;
   border: 2px dashed #aaa;
-  border-radius: 50%; /* Make it a perfect circle */
   background-color: #f9f9f9;
 }
 
-.radial-item {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform-origin: 0 0; /* Set transform origin at the center of the circle */
-  transform: rotate(calc(var(--angle) * 1deg)) translate(150px) rotate(calc(var(--angle) * -1deg));
-  /* First rotate to position the text, move it outward, then counter-rotate to make text readable */
+.grid-item {
+  text-align: center;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-weight: bold;
 }
 
-.radial-item:nth-child(1) {
-  --angle: 0; /* Angle in degrees */
-}
-
-.radial-item:nth-child(2) {
-  --angle: 120; /* 120 degrees around the circle */
-}
 
 .radial-item:nth-child(3) {
   --angle: 240; /* 240 degrees around the circle */
