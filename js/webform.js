@@ -40,9 +40,13 @@ function submitRecord() {
     subtypes: document.getElementById("subtypes").value.split(",")
   };
 
-  // Generate HTML and append to output
+  // Generate the HTML
   const listItemHTML = generateListItem(formData);
-  document.getElementById("output").innerHTML = listItemHTML;
+
+  // Create a Blob and trigger a download
+  const blob = new Blob([listItemHTML], { type: "text/html" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "grid_tile.html";
+  link.click();
 }
-
-
