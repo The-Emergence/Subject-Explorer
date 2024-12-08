@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Webform for Grid Tiles</title>
-  <link rel="stylesheet" href="webform.css"> <!-- Link to the CSS file -->
+  <link rel="stylesheet" href="webform.css"> <!-- Optional: Add styling -->
 </head>
 <body>
   <h1>Create Grid Tile</h1>
@@ -20,14 +20,9 @@
     <label>Object: <input type="text" id="object"></label><br>
     <label>Type: <input type="text" id="type"></label><br>
     <label>Subtypes: <input type="text" id="subtypes" placeholder="Separate with commas"></label><br>
-    <button type="button" onclick="submitRecord()">Generate Record</button>
+    <button type="button" onclick="submitRecord()">Generate and Download HTML</button>
   </form>
 
-  <h2>Generated Tile</h2>
-  <div id="output"></div>
-
-  <script src="webform.js"></script> <!-- Link to the JavaScript file -->
+  <script src="webform.js"></script>
 </body>
 </html>
-
-
