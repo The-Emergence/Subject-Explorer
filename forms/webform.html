@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expander and Tile Preview Webform</title>
+    <title>Record Webform</title>
 </head>
 <body>
     <h1>Record Webform</h1>
@@ -20,7 +20,7 @@
         <input type="text" id="tilePredicate" placeholder="e.g., 40 Watt" required><br><br>
 
         <label for="tileObject">Object:</label><br>
-        <input type="text" id="tileObject" placeholder="e.g., Warm" required><br><br>
+        <input type="text" id="tileObject" placeholder="e.g., Warm Tone" required><br><br>
 
         <label for="tileType">Type:</label><br>
         <input type="text" id="tileType" placeholder="e.g., Tube Amp" required><br><br>
@@ -39,8 +39,8 @@
         <label for="expanderImage">Expander Image Link:</label><br>
         <input type="url" id="expanderImage" required><br><br>
 
-        <label for="expanderSubject">Expander Subject:</label><br>
-        <input type="text" id="expanderSubject" required><br><br>
+        <label for="expanderTitle">Expander Title:</label><br>
+        <input type="text" id="expanderTitle" required><br><br>
 
         <label for="expanderDescription">Expander Description:</label><br>
         <textarea id="expanderDescription" required></textarea><br><br>
@@ -69,40 +69,37 @@
             // Expander values
             const expanderLink = document.getElementById("expanderLink").value;
             const expanderImage = document.getElementById("expanderImage").value;
-            const expanderSubject = document.getElementById("expanderSubject").value;
+            const expanderTitle = document.getElementById("expanderTitle").value;
             const expanderDescription = document.getElementById("expanderDescription").value;
             const breadcrumbs = document.getElementById("breadcrumbs").value.split(",").map(word => word.trim()).join(" | ");
             const associations = document.getElementById("associations").value.split(",").map(word => word.trim()).join(" | ");
 
-            // Create HTML for Tile Preview
-            const tileHTML = `
-<div class="tile">
-    <div class="product-badge">${tileBadge}</div>
-    <div class="text-group">
-        <div class="word subject">${tileSubject}</div>
-        <div class="word predicate">${tilePredicate}</div>
-        <div class="word object">${tileObject}</div>
-        <div class="word type">${tileType}</div>
-        <div class="word subtype">${tileSubtype}</div>
-        <div class="word relationship">${tileRelationship}</div>
+            // Generate HTML content
+            const htmlContent = `
+<li>
+    <div class="tile">
+        <div class="product-badge">${tileBadge}</div>
+        <div class="text-group">
+            <div class="word subject">${tileSubject}</div>
+            <div class="word predicate">${tilePredicate}</div>
+            <div class="word object">${tileObject}</div>
+            <div class="word type">${tileType}</div>
+            <div class="word subtype">${tileSubtype}</div>
+            <div class="word relationship">${tileRelationship}</div>
+        </div>
     </div>
-</div>`;
 
-            // Create HTML for Expander
-            const expanderHTML = `
-<a href="${expanderLink}" 
-   data-largesrc="${expanderImage}" 
-   data-title="${expanderSubject}" 
-   data-description="${expanderDescription}.
-   <br><br><strong>BREADCRUMBS</strong><br>${breadcrumbs}<br><br>
-   <strong>ASSOCIATIONS</strong><br>${associations} <strong>Share This</strong>">
-</a>`;
-
-            // Combine Tile and Expander
-            const fullHTML = `${tileHTML}\n${expanderHTML}`;
+    <a href="${expanderLink}" 
+       data-largesrc="${expanderImage}" 
+       data-title="${expanderTitle}" 
+       data-description="${expanderDescription}.
+       <br><br><strong>BREADCRUMBS</strong><br>${breadcrumbs}<br><br>
+       <strong>ASSOCIATIONS</strong><br>${associations} <strong>Share This</strong>">
+    </a>
+</li>`;
 
             // Create a Blob and trigger download
-            const blob = new Blob([fullHTML], { type: "text/html" });
+            const blob = new Blob([htmlContent], { type: "text/html" });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
             link.download = `${tileSubject.replace(/ /g, "_")}_record.html`;
