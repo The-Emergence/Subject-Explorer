@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Record Webform with Limits</title>
+    <title>Record Webform with Strict Limits</title>
 </head>
 <body>
     <h1>Record Webform</h1>
@@ -57,23 +57,53 @@
 
     <script>
         function generateHTML() {
+            // Gather form inputs
+            const expanderLink = document.getElementById("expanderLink").value;
+            const expanderImage = document.getElementById("expanderImage").value;
+            const expanderTitle = document.getElementById("expanderTitle").value;
             const expanderDescription = document.getElementById("expanderDescription").value;
-            if (expanderDescription.length > 250) {
-                alert("Description exceeds maximum length!");
-                return;
-            }
             const breadcrumbs = document.getElementById("breadcrumbs").value;
-            if (breadcrumbs.length > 95) {
-                alert("Breadcrumbs exceed maximum length!");
-                return;
-            }
             const associations = document.getElementById("associations").value;
-            if (associations.length > 95) {
-                alert("Associations exceed maximum length!");
-                return;
-            }
 
-            // Add remaining logic for HTML generation (same as before)...
+            const tileBadge = document.getElementById("tileBadge").value;
+            const tileSubject = document.getElementById("tileSubject").value;
+            const tilePredicate = document.getElementById("tilePredicate").value;
+            const tileObject = document.getElementById("tileObject").value;
+            const tileType = document.getElementById("tileType").value;
+            const tileSubtype = document.getElementById("tileSubtype").value;
+            const tileRelationship = document.getElementById("tileRelationship").value;
+
+            // Generate HTML content
+            const htmlContent = `
+<li>
+    <a href="${expanderLink}" 
+       data-largesrc="${expanderImage}" 
+       data-title="${expanderTitle}" 
+       data-description="${expanderDescription}.
+       <br><br><strong>BREADCRUMBS</strong><br>${breadcrumbs}<br><br>
+       <strong>ASSOCIATIONS</strong><br>${associations} <strong>Share This</strong>">
+
+        <div class="tile">
+            <div class="product-badge">${tileBadge}</div>
+            <div class="text-group">
+                <div class="word subject">${tileSubject}</div>
+                <div class="word predicate">${tilePredicate}</div>
+                <div class="word object">${tileObject}</div>
+                <div class="word type">${tileType}</div>
+                <div class="word subtype">${tileSubtype}</div>
+                <div class="word relationship">${tileRelationship}</div>
+            </div>
+        </div>
+
+    </a>
+</li>`;
+
+            // Create a Blob and trigger download
+            const blob = new Blob([htmlContent], { type: "text/html" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `${tileSubject.replace(/ /g, "_")}_record.html`;
+            link.click();
         }
     </script>
 </body>
