@@ -8,13 +8,33 @@
 <body>
     <h1>Record Webform</h1>
     <form id="recordForm">
+        <!-- Expander Section -->
+        <h2>Expander Section</h2>
+        <label for="expanderLink">Expander Link:</label><br>
+        <input type="url" id="expanderLink" placeholder="Enter the Expander Link" required><br><br>
+
+        <label for="expanderImage">Expander Image Link:</label><br>
+        <input type="url" id="expanderImage" placeholder="Enter the Expander Image Link" required><br><br>
+
+        <label for="expanderTitle">Expander Title:</label><br>
+        <input type="text" id="expanderTitle" placeholder="Enter the Expander Title" required><br><br>
+
+        <label for="expanderDescription">Expander Description:</label><br>
+        <textarea id="expanderDescription" placeholder="Enter the Expander Description" required></textarea><br><br>
+
+        <label for="breadcrumbs">Breadcrumbs (comma separated):</label><br>
+        <input type="text" id="breadcrumbs" placeholder="Enter Breadcrumbs" required><br><br>
+
+        <label for="associations">Associations (comma separated):</label><br>
+        <input type="text" id="associations" placeholder="Enter Associations" required><br><br>
+
         <!-- Tile Preview Section -->
         <h2>Tile Preview Section</h2>
         <label for="tileBadge">Badge:</label><br>
         <input type="text" id="tileBadge" placeholder="e.g., PRODUCT - Guitar Amp" required><br><br>
 
         <label for="tileSubject">Subject:</label><br>
-        <input type="text" id="tileSubject" placeholder="e.g., Fender Hot Rod Deluxe" required><br><br>
+        <input type="text" id="tileSubject" placeholder="e.g., Guitar Amp" required><br><br>
 
         <label for="tilePredicate">Predicate:</label><br>
         <input type="text" id="tilePredicate" placeholder="e.g., 40 Watt" required><br><br>
@@ -29,27 +49,7 @@
         <input type="text" id="tileSubtype" placeholder="e.g., Jazz/Blues" required><br><br>
 
         <label for="tileRelationship">Relationship:</label><br>
-        <input type="text" id="tileRelationship" placeholder="e.g., John Mayer" required><br><br>
-
-        <!-- Expander Section -->
-        <h2>Expander Section</h2>
-        <label for="expanderLink">Expander Link:</label><br>
-        <input type="url" id="expanderLink" required><br><br>
-
-        <label for="expanderImage">Expander Image Link:</label><br>
-        <input type="url" id="expanderImage" required><br><br>
-
-        <label for="expanderTitle">Expander Title:</label><br>
-        <input type="text" id="expanderTitle" required><br><br>
-
-        <label for="expanderDescription">Expander Description:</label><br>
-        <textarea id="expanderDescription" required></textarea><br><br>
-
-        <label for="breadcrumbs">Breadcrumbs (comma separated):</label><br>
-        <input type="text" id="breadcrumbs" required><br><br>
-
-        <label for="associations">Associations (comma separated):</label><br>
-        <input type="text" id="associations" required><br><br>
+        <input type="text" id="tileRelationship" placeholder="e.g., John Mayer, Eric Clapton" required><br><br>
 
         <!-- Generate Button -->
         <button type="button" onclick="generateHTML()">Generate and Download HTML</button>
@@ -57,6 +57,14 @@
 
     <script>
         function generateHTML() {
+            // Expander values
+            const expanderLink = document.getElementById("expanderLink").value;
+            const expanderImage = document.getElementById("expanderImage").value;
+            const expanderTitle = document.getElementById("expanderTitle").value;
+            const expanderDescription = document.getElementById("expanderDescription").value;
+            const breadcrumbs = document.getElementById("breadcrumbs").value.split(",").map(word => word.trim()).join(" | ");
+            const associations = document.getElementById("associations").value.split(",").map(word => word.trim()).join(" | ");
+
             // Tile Preview values
             const tileBadge = document.getElementById("tileBadge").value;
             const tileSubject = document.getElementById("tileSubject").value;
@@ -66,17 +74,17 @@
             const tileSubtype = document.getElementById("tileSubtype").value;
             const tileRelationship = document.getElementById("tileRelationship").value;
 
-            // Expander values
-            const expanderLink = document.getElementById("expanderLink").value;
-            const expanderImage = document.getElementById("expanderImage").value;
-            const expanderTitle = document.getElementById("expanderTitle").value;
-            const expanderDescription = document.getElementById("expanderDescription").value;
-            const breadcrumbs = document.getElementById("breadcrumbs").value.split(",").map(word => word.trim()).join(" | ");
-            const associations = document.getElementById("associations").value.split(",").map(word => word.trim()).join(" | ");
-
             // Generate HTML content
             const htmlContent = `
 <li>
+    <a href="${expanderLink}" 
+       data-largesrc="${expanderImage}" 
+       data-title="${expanderTitle}" 
+       data-description="${expanderDescription}.
+       <br><br><strong>BREADCRUMBS</strong><br>${breadcrumbs}<br><br>
+       <strong>ASSOCIATIONS</strong><br>${associations} <strong>Share This</strong>">
+    </a>
+
     <div class="tile">
         <div class="product-badge">${tileBadge}</div>
         <div class="text-group">
@@ -88,14 +96,6 @@
             <div class="word relationship">${tileRelationship}</div>
         </div>
     </div>
-
-    <a href="${expanderLink}" 
-       data-largesrc="${expanderImage}" 
-       data-title="${expanderTitle}" 
-       data-description="${expanderDescription}.
-       <br><br><strong>BREADCRUMBS</strong><br>${breadcrumbs}<br><br>
-       <strong>ASSOCIATIONS</strong><br>${associations} <strong>Share This</strong>">
-    </a>
 </li>`;
 
             // Create a Blob and trigger download
