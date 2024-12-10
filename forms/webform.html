@@ -3,11 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expander Record Webform</title>
+    <title>Expander and Tile Preview Webform</title>
 </head>
 <body>
-    <h1>Expander Record Webform</h1>
-    <form id="expanderForm">
+    <h1>Record Webform</h1>
+    <form id="recordForm">
+        <!-- Tile Preview Section -->
+        <h2>Tile Preview Section</h2>
+        <label for="tileBadge">Badge:</label><br>
+        <input type="text" id="tileBadge" placeholder="e.g., PRODUCT - Guitar Amp" required><br><br>
+
+        <label for="tileSubject">Subject:</label><br>
+        <input type="text" id="tileSubject" placeholder="e.g., Fender Hot Rod Deluxe" required><br><br>
+
+        <label for="tilePredicate">Predicate:</label><br>
+        <input type="text" id="tilePredicate" placeholder="e.g., 40 Watt" required><br><br>
+
+        <label for="tileObject">Object:</label><br>
+        <input type="text" id="tileObject" placeholder="e.g., Warm" required><br><br>
+
+        <label for="tileType">Type:</label><br>
+        <input type="text" id="tileType" placeholder="e.g., Tube Amp" required><br><br>
+
+        <label for="tileSubtype">Subtype:</label><br>
+        <input type="text" id="tileSubtype" placeholder="e.g., Jazz/Blues" required><br><br>
+
+        <label for="tileRelationship">Relationship:</label><br>
+        <input type="text" id="tileRelationship" placeholder="e.g., John Mayer" required><br><br>
+
+        <!-- Expander Section -->
+        <h2>Expander Section</h2>
         <label for="expanderLink">Expander Link:</label><br>
         <input type="url" id="expanderLink" required><br><br>
 
@@ -26,12 +51,22 @@
         <label for="associations">Associations (comma separated):</label><br>
         <input type="text" id="associations" required><br><br>
 
+        <!-- Generate Button -->
         <button type="button" onclick="generateHTML()">Generate and Download HTML</button>
     </form>
 
     <script>
         function generateHTML() {
-            // Gather input values
+            // Tile Preview values
+            const tileBadge = document.getElementById("tileBadge").value;
+            const tileSubject = document.getElementById("tileSubject").value;
+            const tilePredicate = document.getElementById("tilePredicate").value;
+            const tileObject = document.getElementById("tileObject").value;
+            const tileType = document.getElementById("tileType").value;
+            const tileSubtype = document.getElementById("tileSubtype").value;
+            const tileRelationship = document.getElementById("tileRelationship").value;
+
+            // Expander values
             const expanderLink = document.getElementById("expanderLink").value;
             const expanderImage = document.getElementById("expanderImage").value;
             const expanderSubject = document.getElementById("expanderSubject").value;
@@ -39,8 +74,22 @@
             const breadcrumbs = document.getElementById("breadcrumbs").value.split(",").map(word => word.trim()).join(" | ");
             const associations = document.getElementById("associations").value.split(",").map(word => word.trim()).join(" | ");
 
-            // Create the HTML content
-            const htmlContent = `
+            // Create HTML for Tile Preview
+            const tileHTML = `
+<div class="tile">
+    <div class="product-badge">${tileBadge}</div>
+    <div class="text-group">
+        <div class="word subject">${tileSubject}</div>
+        <div class="word predicate">${tilePredicate}</div>
+        <div class="word object">${tileObject}</div>
+        <div class="word type">${tileType}</div>
+        <div class="word subtype">${tileSubtype}</div>
+        <div class="word relationship">${tileRelationship}</div>
+    </div>
+</div>`;
+
+            // Create HTML for Expander
+            const expanderHTML = `
 <a href="${expanderLink}" 
    data-largesrc="${expanderImage}" 
    data-title="${expanderSubject}" 
@@ -49,11 +98,14 @@
    <strong>ASSOCIATIONS</strong><br>${associations} <strong>Share This</strong>">
 </a>`;
 
+            // Combine Tile and Expander
+            const fullHTML = `${tileHTML}\n${expanderHTML}`;
+
             // Create a Blob and trigger download
-            const blob = new Blob([htmlContent], { type: "text/html" });
+            const blob = new Blob([fullHTML], { type: "text/html" });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = `${expanderSubject.replace(/ /g, "_")}_record.html`;
+            link.download = `${tileSubject.replace(/ /g, "_")}_record.html`;
             link.click();
         }
     </script>
