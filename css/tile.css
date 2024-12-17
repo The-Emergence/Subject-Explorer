@@ -42,12 +42,12 @@
     margin: 5px 0;
     font-family: Arial, sans-serif;
     position: relative; /* Required for pseudo-elements */
-    padding-left: 15px; /* Space for left bar */
-    padding-right: 15px; /* Space for right bar */
+    padding-left: 25px; /* Increase padding to accommodate bars */
+    padding-right: 25px;
     text-align: center;
 }
 
-/* Left and Right Bars */
+/* Left and Right Horizontal Bars with 3px Gap */
 
 /* Class: Horizontal bars */
 .word.class::before,
@@ -62,11 +62,11 @@
 }
 
 .word.class::before {
-    left: 0; /* Left bar */
+    left: 3px; /* 3px gap from the text */
 }
 
 .word.class::after {
-    right: 0; /* Right bar */
+    right: 3px; /* 3px gap from the text */
 }
 
 /* Subject: Horizontal bars */
@@ -82,11 +82,11 @@
 }
 
 .word.subject::before {
-    left: 0;
+    left: 3px;
 }
 
 .word.subject::after {
-    right: 0;
+    right: 3px;
 }
 
 /* Breadcrumb: Horizontal bars */
@@ -102,11 +102,11 @@
 }
 
 .word.breadcrumb::before {
-    left: 0;
+    left: 3px;
 }
 
 .word.breadcrumb::after {
-    right: 0;
+    right: 3px;
 }
 
 /* Color Word: Horizontal bars */
@@ -122,11 +122,11 @@
 }
 
 .word.colorword::before {
-    left: 0;
+    left: 3px;
 }
 
 .word.colorword::after {
-    right: 0;
+    right: 3px;
 }
 
 /* Hover effect for better visibility */
