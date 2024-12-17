@@ -56,17 +56,17 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 20px;
+    width: 10px;
     height: 4px;
     background-color: #6A0572; /* Deep Purple for Class */
 }
 
 .word.class::before {
-    left: 3px; /* 3px gap from the text */
+    left: 5px; /* 3px gap from the text */
 }
 
 .word.class::after {
-    right: 3px; /* 3px gap from the text */
+    right: 5px; /* 3px gap from the text */
 }
 
 /* Subject: Horizontal bars */
@@ -76,17 +76,17 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 20px;
+    width: 10px;
     height: 4px;
     background-color: #2a9d8f; /* Teal for Subject */
 }
 
 .word.subject::before {
-    left: 3px;
+    left: 5px;
 }
 
 .word.subject::after {
-    right: 3px;
+    right: 5px;
 }
 
 /* Breadcrumb: Horizontal bars */
@@ -96,17 +96,17 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 20px;
+    width: 10px;
     height: 4px;
     background-color: #e76f51; /* Coral for Breadcrumb */
 }
 
 .word.breadcrumb::before {
-    left: 3px;
+    left: 5px;
 }
 
 .word.breadcrumb::after {
-    right: 3px;
+    right: 5px;
 }
 
 /* Color Word: Horizontal bars */
@@ -116,17 +116,17 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 20px;
+    width: 10px;
     height: 4px;
     background-color: #f4a261; /* Warm Yellow for Color Words */
 }
 
 .word.colorword::before {
-    left: 3px;
+    left: 5px;
 }
 
 .word.colorword::after {
-    right: 3px;
+    right: 5px;
 }
 
 /* Hover effect for better visibility */
