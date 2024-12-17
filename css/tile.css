@@ -8,7 +8,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end; /* Push content to the bottom */
+    justify-content: flex-end;
     text-align: center;
     overflow: hidden;
     position: relative;
@@ -16,7 +16,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Badge styling */
+/* Badge styling remains unchanged */
 .person-badge, .provider-badge, .product-badge, .insight-badge {
     position: absolute;
     top: 10px;
@@ -31,7 +31,7 @@
 
 /* Grouping text styling for bottom alignment */
 .tile .text-group {
-    margin-bottom: 15px; /* Adds spacing from the bottom */
+    margin-bottom: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -44,54 +44,89 @@
     position: relative; /* Required for pseudo-elements */
     padding-left: 15px; /* Space for left bar */
     padding-right: 15px; /* Space for right bar */
+    text-align: center;
 }
 
-/* Class: Right bar */
-.word.class::before {
+/* Left and Right Bars */
+
+/* Class: Horizontal bars */
+.word.class::before,
+.word.class::after {
     content: '';
     position: absolute;
-    right: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 4px;
-    height: 100%;
+    width: 20px;
+    height: 4px;
     background-color: #6A0572; /* Deep Purple for Class */
 }
 
-/* Subject: Left bar */
-.word.subject::before {
+.word.class::before {
+    left: 0; /* Left bar */
+}
+
+.word.class::after {
+    right: 0; /* Right bar */
+}
+
+/* Subject: Horizontal bars */
+.word.subject::before,
+.word.subject::after {
     content: '';
     position: absolute;
-    left: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 4px;
-    height: 100%;
+    width: 20px;
+    height: 4px;
     background-color: #2a9d8f; /* Teal for Subject */
 }
 
-/* Breadcrumb: Right bar */
-.word.breadcrumb::before {
+.word.subject::before {
+    left: 0;
+}
+
+.word.subject::after {
+    right: 0;
+}
+
+/* Breadcrumb: Horizontal bars */
+.word.breadcrumb::before,
+.word.breadcrumb::after {
     content: '';
     position: absolute;
-    right: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 4px;
-    height: 100%;
+    width: 20px;
+    height: 4px;
     background-color: #e76f51; /* Coral for Breadcrumb */
 }
 
-/* Color Word: Left bar */
-.word.colorword::before {
+.word.breadcrumb::before {
+    left: 0;
+}
+
+.word.breadcrumb::after {
+    right: 0;
+}
+
+/* Color Word: Horizontal bars */
+.word.colorword::before,
+.word.colorword::after {
     content: '';
     position: absolute;
-    left: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 4px;
-    height: 100%;
+    width: 20px;
+    height: 4px;
     background-color: #f4a261; /* Warm Yellow for Color Words */
+}
+
+.word.colorword::before {
+    left: 0;
+}
+
+.word.colorword::after {
+    right: 0;
 }
 
 /* Hover effect for better visibility */
