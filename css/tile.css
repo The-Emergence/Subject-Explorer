@@ -46,11 +46,11 @@
     padding-right: 15px; /* Space for right bar */
 }
 
-/* Class: Left bar */
+/* Class: Right bar */
 .word.class::before {
     content: '';
     position: absolute;
-    left: 0;
+    right: 0;
     top: 50%;
     transform: translateY(-50%);
     width: 4px;
