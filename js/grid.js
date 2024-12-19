@@ -328,3 +328,18 @@ var Grid = (function() {
 
 // Call renderDynamicGrid on page load
 renderDynamicGrid();
+
+
+async function testConnection() {
+    const { data, error } = await supabase.from('subject_explorer_records').select('*');
+    if (error) {
+        console.error("Error fetching records:", error);
+    } else {
+        console.log("Fetched records:", data);
+    }
+}
+
+// Call the testConnection function
+testConnection();
+
+
