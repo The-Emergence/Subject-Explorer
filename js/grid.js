@@ -1,10 +1,9 @@
-/* Updated grid.js with improved Supabase Integration and Expander logic */
+/* Updated grid.js with unified Supabase Integration and Expander logic */
 
 // Initialize Supabase
-const supabaseUrl = 'https://qednuirrccgrlcqrszmb.supabase.co'; // Your Supabase project URL
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlZG51aXJyY2NncmxjcXJzem1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0MTA5NDYsImV4cCI6MjA0OTk4Njk0Nn0.Lb9OmaJN5TU_AOSoExbHLTBpCYcURTT3lG2bn1RJEr0'; // Your Anon Key
+const supabaseUrl = "https://qednuirrccgrlcqrszmb.supabase.co"; // Replace with your actual project URL
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlZG51aXJyY2NncmxjcXJzem1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0MTA5NDYsImV4cCI6MjA0OTk4Njk0Nn0.Lb9OmaJN5TU_AOSoExbHLTBpCYcURTT3lG2bn1RJEr0"; // Your Anon Key
 const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
 
 // Fetch records from Supabase
 async function fetchRecords() {
@@ -15,6 +14,7 @@ async function fetchRecords() {
 
         if (error) throw error;
 
+        console.log("Fetched records:", data); // Log the fetched records for debugging
         return data;
     } catch (err) {
         console.error("Error fetching records:", err.message);
@@ -26,6 +26,14 @@ async function fetchRecords() {
 async function renderDynamicGrid() {
     const tilesContainer = document.getElementById("og-grid");
     const records = await fetchRecords();
+
+    if (records.length === 0) {
+        console.error("No records fetched from Supabase.");
+        return;
+    }
+
+    // Clear existing tiles
+    tilesContainer.innerHTML = "";
 
     // Dynamically create tiles
     records.forEach(record => {
@@ -47,8 +55,6 @@ async function renderDynamicGrid() {
                 </div>
             </a>
         `;
-
-        // Append each tile to the container
         tilesContainer.appendChild(tile);
     });
 
@@ -328,18 +334,3 @@ var Grid = (function() {
 
 // Call renderDynamicGrid on page load
 renderDynamicGrid();
-
-
-async function testConnection() {
-    const { data, error } = await supabase.from('subject_explorer_records').select('*');
-    if (error) {
-        console.error("Error fetching records:", error);
-    } else {
-        console.log("Fetched records:", data);
-    }
-}
-
-// Call the testConnection function
-testConnection();
-
-
