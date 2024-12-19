@@ -1,9 +1,10 @@
 /* Updated grid.js with improved Supabase Integration and Expander logic */
 
 // Initialize Supabase
-const supabaseUrl = "https://your-project-url.supabase.co"; // Replace with your Supabase URL
-const supabaseAnonKey = "your-anon-key"; // Replace with your Supabase anon key
-const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+const supabaseUrl = 'https://qednuirrccgrlcqrszmb.supabase.co'; // Your Supabase project URL
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlZG51aXJyY2NncmxjcXJzem1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0MTA5NDYsImV4cCI6MjA0OTk4Njk0Nn0.Lb9OmaJN5TU_AOSoExbHLTBpCYcURTT3lG2bn1RJEr0'; // Your Anon Key
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
 
 // Fetch records from Supabase
 async function fetchRecords() {
