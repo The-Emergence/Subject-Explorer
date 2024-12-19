@@ -31,15 +31,21 @@
 		</div>
 
 		<!-- Load dependencies -->
-		<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
-		<!-- Load grid.js -->
-		<script src="js/grid.js"></script>
-		<script>
-			$(function() {
-				Grid.init();
-			});
-		</script>
+<!-- Load grid.js -->
+<script src="js/grid.js"></script>
+
+<!-- Initialize Grid -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (typeof Grid !== "undefined" && Grid.init) {
+            Grid.init();
+        } else {
+            console.error("Grid is not defined or init function is missing.");
+        }
+    });
+</script>
 	</body>
 </html>
