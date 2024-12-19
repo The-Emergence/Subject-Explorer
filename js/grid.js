@@ -1,4 +1,4 @@
-/* Updated grid.js with Supabase Integration */
+/* Updated grid.js with improved Supabase Integration and Expander logic */
 
 // Initialize Supabase
 const supabaseUrl = "https://your-project-url.supabase.co"; // Replace with your Supabase URL
@@ -26,32 +26,29 @@ async function renderDynamicGrid() {
     const tilesContainer = document.getElementById("og-grid");
     const records = await fetchRecords();
 
-    // Clear existing tiles
-    tilesContainer.innerHTML = "";
-
     // Dynamically create tiles
     records.forEach(record => {
-        const tile = `
-            <li>
-                <a href="${record.subject_link}" 
-                   data-largesrc="${record.subject_image || 'https://via.placeholder.com/150'}" 
-                   data-title="${record.subject}" 
-                   data-description="${record.description || ''}">
-                    <div class="tile">
-                        <div class="product-badge">${record.type.toUpperCase()}</div>
-                        <div class="text-group">
-                            <div class="word subject">${record.subject}</div>
-                            <div class="word predicate">${record.predicate}</div>
-                            <div class="word object">${record.object}</div>
-                            <div class="word type">${record.subtype}</div>
-                            <div class="word relationship">${record.relationship}</div>
-                        </div>
+        const tile = document.createElement('li');
+        tile.innerHTML = `
+            <a href="${record.subject_link}" 
+               data-largesrc="${record.subject_image || 'https://via.placeholder.com/150'}" 
+               data-title="${record.subject}" 
+               data-description="${record.description || ''}">
+                <div class="tile">
+                    <div class="product-badge">${record.type.toUpperCase()}</div>
+                    <div class="text-group">
+                        <div class="word subject">${record.subject}</div>
+                        <div class="word predicate">${record.predicate}</div>
+                        <div class="word object">${record.object}</div>
+                        <div class="word type">${record.subtype}</div>
+                        <div class="word relationship">${record.relationship}</div>
                     </div>
-                </a>
-            </li>
+                </div>
+            </a>
         `;
 
-        tilesContainer.innerHTML += tile;
+        // Append each tile to the container
+        tilesContainer.appendChild(tile);
     });
 
     // Reinitialize Grid functionality after dynamic insertion
