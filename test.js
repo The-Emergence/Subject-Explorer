@@ -5,24 +5,24 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 async function fetchData() {
+    console.log('Function fetchData is running...'); // Step 1
     try {
-        console.log('Fetching data...');
+        console.log('Attempting to fetch data...'); // Step 2
         const { data, error } = await supabase
-            .from('subject_explorer_records') // Use your actual table name
+            .from('subject_explorer_records') // Table name
             .select('*');
 
         if (error) {
-            console.error('Error fetching data:', error);
+            console.error('Error fetching data:', error); // Step 3
             return;
         }
 
-        console.log('Fetched data:', data);
+        console.log('Data fetched successfully:', data); // Step 4
         const output = document.getElementById('output');
         output.textContent = JSON.stringify(data, null, 2);
     } catch (err) {
-        console.error('Unexpected error:', err);
+        console.error('Unexpected error:', err); // Step 5
     }
 }
 
 fetchData();
-
