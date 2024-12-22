@@ -6,23 +6,22 @@ const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 console.log('Supabase client initialized:', supabase);
 async function fetchData() {
-    console.log('Function fetchData is running...'); // Step 1
+    console.log('Function fetchData is running...');
     try {
-        console.log('Attempting to fetch data...'); // Step 2
         const { data, error } = await supabase
-            .from('subject_explorer_records') // Table name
-            .select('*');
+            .from('subject_explorer_records') // Replace with your actual table name
+            .select('*'); // Fetch all records
 
         if (error) {
-            console.error('Error fetching data:', error); // Step 3
+            console.error('Error fetching data:', error);
             return;
         }
 
-        console.log('Data fetched successfully:', data); // Step 4
+        console.log('Fetched data:', data); // Logs the fetched data
         const output = document.getElementById('output');
-        output.textContent = JSON.stringify(data, null, 2);
+        output.textContent = JSON.stringify(data, null, 2); // Display data
     } catch (err) {
-        console.error('Unexpected error:', err); // Step 5
+        console.error('Unexpected error:', err);
     }
 }
 
