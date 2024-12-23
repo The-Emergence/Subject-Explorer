@@ -1,32 +1,35 @@
-// Check if Supabase is initialized
-console.log("Supabase object:", supabase);
+// Verify Supabase client is initialized
+console.log("Initializing Supabase...");
 
-// Ensure fetchData is being called
+const SUPABASE_URL = "https://qednuirrccgrlcqrszmb.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInFlZG51aXJyY2NncmxjcXJzem1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0MTA5NDYsImV4cCI6MjA0OTk4Njk0Nn0.Lb9OmaJN5TU_AOSoExbHLTBpCYcURTT3lG2bn1RJEr0";
+
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+console.log("Supabase client initialized:", supabase);
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOMContentLoaded event fired.");
   fetchData();
 });
 
-// Inside fetchData
 async function fetchData() {
   console.log("fetchData function is running...");
-
+  
   try {
     const { data, error } = await supabase
-      .from("subject_explorer_records") // Your table name
+      .from("subject_explorer_records")
       .select("*");
 
     if (error) {
-      console.error("Supabase error:", error.message);
+      console.error("Error fetching data:", error.message);
       return;
     }
 
     console.log("Supabase data fetched successfully:", data);
 
     const output = document.getElementById("output");
-    output.innerHTML = ""; // Clear existing content
+    output.innerHTML = ""; // Clear previous content
 
-    // Render fetched data
     data.forEach(record => {
       const recordElement = document.createElement("div");
       recordElement.innerHTML = `
@@ -38,6 +41,6 @@ async function fetchData() {
       output.appendChild(recordElement);
     });
   } catch (err) {
-    console.error("Unexpected error:", err);
+    console.error("Unexpected error:", err.message);
   }
 }
