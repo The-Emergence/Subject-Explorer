@@ -4,9 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Supabase Test</title>
-  <script src="test.js"></script>  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> <!-- Supabase SDK -->
+  <script src="test.js" defer></script> <!-- Defer ensures DOM loads before test.js -->
 </head>
 <body>
-  <div id="output">Loading...</div>
+  <h1>Supabase Records</h1>
+  <pre id="output">Loading...</pre> <!-- Use <pre> for better JSON formatting -->
 </body>
 </html>
