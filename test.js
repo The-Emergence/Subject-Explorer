@@ -1,46 +1,49 @@
-// Verify Supabase client is initialized
+// Verify Supabase client initialization
 console.log("Initializing Supabase...");
 
+// Set the Supabase URL and ANON API Key
 const SUPABASE_URL = "https://qednuirrccgrlcqrszmb.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInFlZG51aXJyY2NncmxjcXJzem1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0MTA5NDYsImV4cCI6MjA0OTk4Njk0Nn0.Lb9OmaJN5TU_AOSoExbHLTBpCYcURTT3lG2bn1RJEr0";
 
+console.log("Supabase URL:", SUPABASE_URL);
+console.log("Supabase ANON Key:", SUPABASE_ANON_KEY);
+
+// Initialize Supabase client
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 console.log("Supabase client initialized:", supabase);
 
+// Add event listener for DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOMContentLoaded event fired.");
   fetchData();
 });
 
+// Async function to fetch data from Supabase
 async function fetchData() {
-  console.log("fetchData function is running...");
-  
+  console.log("Fetching data from Supabase...");
   try {
+    // Make the API request
     const { data, error } = await supabase
-      .from("subject_explorer_records")
+      .from("subject_explorer_records") // Replace with your table name
       .select("*");
 
+    // Check for errors
     if (error) {
-      console.error("Error fetching data:", error.message);
+      console.error("Error fetching data from Supabase:", error.message);
+      document.getElementById("output").textContent =
+        "Error fetching data: " + error.message;
       return;
     }
 
-    console.log("Supabase data fetched successfully:", data);
+    // Log the data
+    console.log("Data fetched successfully:", data);
 
-    const output = document.getElementById("output");
-    output.innerHTML = ""; // Clear previous content
-
-    data.forEach(record => {
-      const recordElement = document.createElement("div");
-      recordElement.innerHTML = `
-        <h3>${record.subject}</h3>
-        <p>${record.description}</p>
-        <img src="${record.subject_image}" alt="${record.subject}" style="width:150px;">
-        <a href="${record.subject_link}" target="_blank">Learn More</a>
-      `;
-      output.appendChild(recordElement);
-    });
+    // Display the data on the page
+    const outputElement = document.getElementById("output");
+    outputElement.textContent = JSON.stringify(data, null, 2);
   } catch (err) {
-    console.error("Unexpected error:", err.message);
+    console.error("Unexpected error during data fetch:", err.message);
+    document.getElementById("output").textContent =
+      "Unexpected error: " + err.message;
   }
 }
