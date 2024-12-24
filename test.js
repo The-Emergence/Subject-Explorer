@@ -5,10 +5,7 @@ console.log("Initializing Supabase...");
 const SUPABASE_URL = "https://qednuirrccgrlcqrszmb.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInFlZG51aXJyY2NncmxjcXJzem1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0MTA5NDYsImV4cCI6MjA0OTk4Njk0Nn0.Lb9OmaJN5TU_AOSoExbHLTBpCYcURTT3lG2bn1RJEr0";
 
-console.log("Supabase URL:", SUPABASE_URL);
-console.log("Supabase ANON Key:", SUPABASE_ANON_KEY);
-
-// Initialize Supabase client
+// Initialize Supabase client BEFORE any references to it
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 console.log("Supabase client initialized:", supabase);
 
