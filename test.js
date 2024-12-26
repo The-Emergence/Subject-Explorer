@@ -1,6 +1,6 @@
 // Supabase configuration
 const SUPABASE_URL = "https://qednuirrccgrlcqrszmb.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlZG51aXJyY2NncmxjcXJzem1iIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNDQxMDk0NiwiZXhwIjoyMDQ5OTg2OTQ2fQ.V8gRGHLQtYbtc69yYm0N5d0rs8dA5JM4lHB_0DHlXzU";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlZG51aXJyY2NncmxjcXJzem1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0MTA5NDYsImV4cCI6MjA0OTk4Njk0Nn0.Lb9OmaJN5TU_AOSoExbHLTBpCYcURTT3lG2bn1RJEr0";
 
 // Ensure code runs only after DOM is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
