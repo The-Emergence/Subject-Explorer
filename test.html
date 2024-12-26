@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supabase Test</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const SUPABASE_URL = "https://qednuirrccgrlcqrszmb.supabase.co";
-        const SUPABASE_ANON_KEY = "your-anon-key";
-
-        document.addEventListener("DOMContentLoaded", () => {
-            console.log("Initializing Supabase...");
-            const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            console.log("Supabase client created:", supabase);
-        });
-    </script>
 </head>
 <body>
     <h1>Supabase Test</h1>
+    <div id="output">Loading...</div>
+
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+    <!-- Custom Script -->
+    <script src="test.js"></script>
 </body>
 </html>
