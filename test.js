@@ -9,6 +9,7 @@ console.log("Supabase ANON Key:", SUPABASE_ANON_KEY);
 
 // Initialize Supabase client BEFORE any references to it
 try {
+  console.log("Initializing Supabase...");
   const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   console.log("Supabase client initialized:", supabase);
 
