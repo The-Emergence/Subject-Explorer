@@ -1,86 +1,66 @@
-// Supabase Configuration to pull data into DIF from DB
+// Supabase Configuration
 const SUPABASE_URL = "https://qednuirrccgrlcqrszmb.supabase.co";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlZG51aXJyY2NncmxjcXJzem1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0MTA5NDYsImV4cCI6MjA0OTk4Njk0Nn0.Lb9OmaJN5TU_AOSoExbHLTBpCYcURTT3lG2bn1RJEr0";
 
-// Ensure the script runs after the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
   console.log("Initializing Supabase...");
-  
-  // Initialize Supabase client
-  let supabase;
-  try {
-    supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    console.log("Supabase initialized successfully.");
-  } catch (error) {
-    console.error("Error initializing Supabase:", error.message);
-    return;
-  }
 
-  // Find the tiles container
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
   const tilesContainer = document.getElementById("og-grid");
+
   if (!tilesContainer) {
-    console.error("Tiles container with ID 'og-grid' not found. Check your HTML structure.");
+    console.error("Tiles container (og-grid) not found.");
     return;
   }
 
-  // Fetch Records from Supabase
   async function fetchRecords() {
     try {
-      console.log("Fetching records from Supabase...");
+      console.log("Fetching records...");
       const { data, error } = await supabase.from("subject_explorer_records").select("*");
 
       if (error) throw error;
 
-      console.log("Records fetched successfully:", data);
+      console.log("Fetched records:", data);
       renderTiles(data);
     } catch (err) {
       console.error("Error fetching records:", err.message);
-      tilesContainer.innerHTML = "<li>Error fetching records. Please try again later.</li>";
+      tilesContainer.innerHTML = "<li>Error loading tiles. Please try again later.</li>";
     }
   }
 
-  // Render Tiles Dynamically
   function renderTiles(records) {
     if (!records || records.length === 0) {
-      console.warn("No records found in Supabase.");
       tilesContainer.innerHTML = "<li>No records available.</li>";
       return;
     }
 
-    // Create HTML structure for each record
-    const tiles = records.map(record => `
-      <li>
-        <a href="${record.subject_link || '#'}"
-           data-largesrc="${record.subject_image || 'https://via.placeholder.com/150'}"
-           data-title="${record.subject || 'Unknown Subject'}"
-           data-description="${record.description || 'No description available.'}">
-          <div class="tile">
-            <div class="product-badge">${(record.record_type || 'Product').toUpperCase()}</div>
-            <div class="text-group">
-              <div class="word subject">${record.subject || 'No Subject'}</div>
-              <div class="word predicate">${record.predicate || 'No Predicate'}</div>
-              <div class="word object">${record.object || 'No Object'}</div>
-              <div class="word type">${record.type || 'No Type'}</div>
-              <div class="word subtype">${record.subtype || 'No Subtype'}</div>
-              <div class="word relationship">${record.relationship || 'No Relationship'}</div>
+    tilesContainer.innerHTML = records
+      .map(record => `
+        <li>
+          <a href="${record.subject_link || '#'}"
+             data-largesrc="${record.subject_image || 'https://via.placeholder.com/150'}"
+             data-title="${record.subject || 'Unknown Subject'}"
+             data-description="${record.description || 'No description available.'}">
+            <div class="tile">
+              <div class="product-badge">${record.class || 'Class'}</div>
+              <div class="text-group">
+                <div class="word subject">${record.subject || 'No Subject'}</div>
+                <div class="word breadcrumbs">${record.breadcrumbs.join(", ") || 'No Breadcrumbs'}</div>
+              </div>
             </div>
-          </div>
-        </a>
-      </li>
-    `);
+          </a>
+        </li>
+      `)
+      .join("");
 
-    // Inject the tiles into the container
-    tilesContainer.innerHTML = tiles.join("");
-
-    // Reinitialize Grid.js functionality for dynamically added elements
+    // Reinitialize Grid functionality
     if (typeof Grid !== "undefined" && typeof Grid.init === "function") {
-      console.log("Reinitializing Grid...");
       Grid.init();
     } else {
-      console.warn("Grid.js is not defined or Grid.init is missing. Ensure Grid.js is loaded.");
+      console.warn("Grid.js is not loaded or Grid.init is missing.");
     }
   }
 
-  // Fetch and render records
   fetchRecords();
 });
