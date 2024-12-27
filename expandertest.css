@@ -1,54 +1,60 @@
-/* General page styling */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
-    margin: 20px;
-    color: #333;
+/* Style for the main container holding all records */
+#output {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
 }
 
-h1 {
-    color: red;
-    font-size: 24px;
-    text-align: center;
-}
-
-/* Record List */
-.record-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-}
-
+/* Style for each individual record */
 .record {
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    width: 300px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
 }
 
-.record-title {
-    font-size: 20px;
-    color: #333;
-    margin-bottom: 10px;
+.record:hover {
+  transform: scale(1.02);
 }
 
-.record-description {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 15px;
+/* Style for the subject (title) */
+.record h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #333;
 }
 
-.record-link {
-    font-size: 14px;
-    color: #007bff;
-    text-decoration: none;
-    font-weight: bold;
+/* Style for the description */
+.record p {
+  font-size: 1rem;
+  color: #555;
+  margin: 0.25rem 0;
 }
 
-.record-link:hover {
-    text-decoration: underline;
+/* Style for labels like Class, Collection, Breadcrumbs, etc. */
+.record p strong {
+  color: #444;
+}
+
+/* Style for links */
+.record a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.record a:hover {
+  text-decoration: underline;
+}
+
+/* Style for the 'No records found' message */
+.no-records {
+  font-size: 1.2rem;
+  color: #999;
+  text-align: center;
+  margin-top: 2rem;
 }
