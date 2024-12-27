@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("Initializing Supabase...");
 
   // Initialize Supabase client *after DOM is loaded*
-  supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   console.log("Supabase client initialized:", supabase);
 
   // Fetch records from Supabase
@@ -30,10 +30,18 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderRecords(records) {
     const outputDiv = document.getElementById("output");
     if (records.length === 0) {
-      outputDiv.innerHTML = "<p>No records found.</p>";
+      outputDiv.innerHTML = "<p class='no-records'>No records found.</p>";
     } else {
-      const recordList = records.map(record => `<li>${JSON.stringify(record)}</li>`).join("");
-      outputDiv.innerHTML = `<ul>${recordList}</ul>`;
+      const recordList = records
+        .map(record => `
+          <div class="record">
+            <h2 class="record-title">${record.subject}</h2>
+            <p class="record-description">${record.description}</p>
+            <a class="record-link" href="${record.subject_link}" target="_blank">Learn More</a>
+          </div>
+        `)
+        .join("");
+      outputDiv.innerHTML = `<div class="record-list">${recordList}</div>`;
     }
   }
 
