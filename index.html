@@ -2,13 +2,14 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>The Deep Inquiry Framework</title>
 		<meta name="description" content="Thumbnail Grid with Expanding Preview" />
 		<meta name="keywords" content="thumbnails, grid, preview, google image search, jquery, image grid, expanding, preview, portfolio" />
 		<meta name="author" content="Codrops" />
-		<link rel="shortcut icon" href="../favicon.ico"> 
+		<link rel="shortcut icon" href="../favicon.ico">
+		<!-- Stylesheets -->
 		<link rel="stylesheet" type="text/css" href="css/default.css" />
 		<link rel="stylesheet" type="text/css" href="css/component.css" />
 		<link rel="stylesheet" type="text/css" href="css/tile.css" />
@@ -17,7 +18,7 @@
 	<body>
 		<div class="container">	
 			<header class="clearfix">
-				<h1>Subject Explorer<span>Collaborate to Illuminate</span></h1>	
+				<h1>Subject Explorer<span>Collaborate to Illuminate</span></h1>
 				Subject | o Product  o Person  o Provider  o Insight | <a href="https://the-emergence.github.io/Subject-Explorer/pages/participant_attractor.html" target="_blank">Engage</a>
 			</header>
 
@@ -38,13 +39,15 @@
 		<script src="js/grid.js"></script>
 
 		<!-- Load Dynamic Tiles Script -->
-<script src="js/dynamictiles.js"></script>
+		<script src="js/dynamictiles.js"></script>
 
 		<!-- Initialize Grid -->
 		<script>
 			document.addEventListener("DOMContentLoaded", function () {
-				if (typeof Grid !== "undefined" && Grid.init) {
+				// Ensure Grid is initialized properly
+				if (typeof Grid !== "undefined" && typeof Grid.init === "function") {
 					Grid.init();
+					console.log("Grid initialized successfully.");
 				} else {
 					console.error("Grid is not defined or init function is missing.");
 				}
