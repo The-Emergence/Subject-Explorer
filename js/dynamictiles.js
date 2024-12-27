@@ -5,25 +5,37 @@ const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
 // Ensure the script runs after the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
   console.log("Initializing Supabase...");
-  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const tilesContainer = document.getElementById("tiles-container");
+  
+  // Initialize Supabase client
+  let supabase;
+  try {
+    supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log("Supabase initialized successfully.");
+  } catch (error) {
+    console.error("Error initializing Supabase:", error.message);
+    return;
+  }
 
+  // Find the tiles container
+  const tilesContainer = document.getElementById("og-grid");
   if (!tilesContainer) {
-    console.error("Tiles container not found. Check your HTML structure.");
+    console.error("Tiles container with ID 'og-grid' not found. Check your HTML structure.");
     return;
   }
 
   // Fetch Records from Supabase
   async function fetchRecords() {
     try {
+      console.log("Fetching records from Supabase...");
       const { data, error } = await supabase.from("subject_explorer_records").select("*");
 
       if (error) throw error;
 
-      console.log("Fetched records:", data);
+      console.log("Records fetched successfully:", data);
       renderTiles(data);
     } catch (err) {
       console.error("Error fetching records:", err.message);
+      tilesContainer.innerHTML = "<li>Error fetching records. Please try again later.</li>";
     }
   }
 
@@ -31,17 +43,17 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderTiles(records) {
     if (!records || records.length === 0) {
       console.warn("No records found in Supabase.");
-      tilesContainer.innerHTML = "<p>No records available.</p>";
+      tilesContainer.innerHTML = "<li>No records available.</li>";
       return;
     }
 
+    // Create HTML structure for each record
     const tiles = records.map(record => `
       <li>
         <a href="${record.subject_link || '#'}"
            data-largesrc="${record.subject_image || 'https://via.placeholder.com/150'}"
            data-title="${record.subject || 'Unknown Subject'}"
            data-description="${record.description || 'No description available.'}">
-
           <div class="tile">
             <div class="product-badge">${(record.record_type || 'Product').toUpperCase()}</div>
             <div class="text-group">
@@ -57,14 +69,15 @@ document.addEventListener("DOMContentLoaded", () => {
       </li>
     `);
 
+    // Inject the tiles into the container
     tilesContainer.innerHTML = tiles.join("");
 
-    // Initialize Grid.js if needed for newly added elements
+    // Reinitialize Grid.js functionality for dynamically added elements
     if (typeof Grid !== "undefined" && typeof Grid.init === "function") {
       console.log("Reinitializing Grid...");
       Grid.init();
     } else {
-      console.warn("Grid.js is not defined or Grid.init is missing.");
+      console.warn("Grid.js is not defined or Grid.init is missing. Ensure Grid.js is loaded.");
     }
   }
 
