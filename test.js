@@ -36,10 +36,18 @@ function renderRecords(records) {
     // Create a simple structure for each record
     const recordList = records
       .map(record => `
-        <div class="record">
+
+ <div class="record">
           <h2>${record.subject}</h2>
           <p>${record.description}</p>
+          <p><strong>Class:</strong> ${record.class}</p>
+          <p><strong>Collection:</strong> ${record.collection}</p>
+          <p><strong>Breadcrumbs:</strong> ${record.breadcrumbs.join(", ")}</p>
+          <p><strong>Color Words:</strong> ${record.color_words.join(", ")}</p>
+          <a href="${record.subject_link}" target="_blank">More Info</a>
         </div>
+
+       
       `)
       .join("");
     outputDiv.innerHTML = recordList;
