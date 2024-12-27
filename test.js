@@ -27,17 +27,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Render records to the page
-  function renderRecords(records) {
-    const outputDiv = document.getElementById("output");
-    if (records.length === 0) {
-      outputDiv.innerHTML = "<p>No records found.</p>";
-    } else {
-      const recordList = records.map(record => `<li>${JSON.stringify(record)}</li>`).join("");
-      outputDiv.innerHTML = `<ul>${recordList}</ul>`;
-    }
+// Render records to the page
+function renderRecords(records) {
+  const outputDiv = document.getElementById("output");
+  if (records.length === 0) {
+    outputDiv.innerHTML = "<p class='no-records'>No records found.</p>";
+  } else {
+    // Create a simple structure for each record
+    const recordList = records
+      .map(record => `
+        <div class="record">
+          <h2>${record.subject}</h2>
+          <p>${record.description}</p>
+        </div>
+      `)
+      .join("");
+    outputDiv.innerHTML = recordList;
   }
-
+}
   // Call fetchRecords function
   fetchRecords();
 });
