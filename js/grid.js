@@ -37,18 +37,18 @@ async function renderDynamicGrid() {
     records.forEach(record => {
         const tile = document.createElement('li');
         tile.innerHTML = `
-            <a href="${record.subject_link}" 
+            <a href="${record.subject_link || '#'}" 
                data-largesrc="${record.subject_image || 'https://via.placeholder.com/150'}" 
-               data-title="${record.subject}" 
-               data-description="${record.description || ''}">
+               data-title="${record.subject || 'Unknown Subject'}" 
+               data-description="${record.description || 'No description available.'}">
                 <div class="tile">
-                    <div class="product-badge">${record.type.toUpperCase()}</div>
+                    <div class="product-badge">${record.type ? record.type.toUpperCase() : 'PRODUCT'}</div>
                     <div class="text-group">
-                        <div class="word subject">${record.subject}</div>
-                        <div class="word predicate">${record.predicate}</div>
-                        <div class="word object">${record.object}</div>
-                        <div class="word type">${record.subtype}</div>
-                        <div class="word relationship">${record.relationship}</div>
+                        <div class="word subject">${record.subject || 'No Subject'}</div>
+                        <div class="word predicate">${record.predicate || 'No Predicate'}</div>
+                        <div class="word object">${record.object || 'No Object'}</div>
+                        <div class="word type">${record.subtype || 'No Subtype'}</div>
+                        <div class="word relationship">${record.relationship || 'No Relationship'}</div>
                     </div>
                 </div>
             </a>
@@ -58,6 +58,7 @@ async function renderDynamicGrid() {
 
     // Reinitialize Grid functionality
     if (typeof Grid !== "undefined" && typeof Grid.init === "function") {
+        console.log("Initializing Grid...");
         Grid.init();
     } else {
         console.error("Grid is not defined or init function is missing.");
