@@ -1,425 +1,70 @@
-/*
-* debouncedresize: special jQuery event that happens once after a window resize
-* Latest version and complete README available on Github:
-* https://github.com/louisremi/jquery-smartresize/blob/master/jquery.debouncedresize.js
-* Copyright 2011 @louis_remi
-* Licensed under the MIT license.
-*/
+// Initialize Supabase
+const supabaseUrl = "https://qednuirrccgrlcqrszmb.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlZG51aXJyY2NncmxjcXJzem1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ0MTA5NDYsImV4cCI6MjA0OTk4Njk0Nn0.Lb9OmaJN5TU_AOSoExbHLTBpCYcURTT3lG2bn1RJEr0";
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-var $event = $.event,
-    $special,
-    resizeTimeout;
+// Fetch records from Supabase
+async function fetchRecords() {
+    try {
+        const { data, error } = await supabase
+            .from('subject_explorer_records')
+            .select('*');
 
-$special = $event.special.debouncedresize = {
-    setup: function () {
-        $(this).on("resize", $special.handler);
-    },
-    teardown: function () {
-        $(this).off("resize", $special.handler);
-    },
-    handler: function (event, execAsap) {
-        var context = this,
-            args = arguments,
-            dispatch = function () {
-                event.type = "debouncedresize";
-                $event.dispatch.apply(context, args);
-            };
+        if (error) throw error;
 
-        if (resizeTimeout) {
-            clearTimeout(resizeTimeout);
-        }
+        console.log("Fetched records:", data);
+        return data;
+    } catch (err) {
+        console.error("Error fetching records:", err.message);
+        return [];
+    }
+}
 
-        execAsap ? dispatch() : (resizeTimeout = setTimeout(dispatch, $special.threshold));
-    },
-    threshold: 250,
-};
+// Render dynamic tiles into the grid
+async function renderDynamicGrid() {
+    const tilesContainer = document.getElementById("og-grid");
+    const records = await fetchRecords();
 
-// Plugin for handling images loaded
-var BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
-
-$.fn.imagesLoaded = function (callback) {
-    var $this = this,
-        deferred = $.isFunction($.Deferred) ? $.Deferred() : 0,
-        hasNotify = $.isFunction(deferred.notify),
-        $images = $this.find('img').add($this.filter('img')),
-        loaded = [],
-        proper = [],
-        broken = [];
-
-    function doneLoading() {
-        var $proper = $(proper),
-            $broken = $(broken);
-
-        if (deferred) {
-            broken.length ? deferred.reject($images, $proper, $broken) : deferred.resolve($images);
-        }
-
-        if ($.isFunction(callback)) {
-            callback.call($this, $images, $proper, $broken);
-        }
+    if (records.length === 0) {
+        console.error("No records fetched from Supabase.");
+        return;
     }
 
-    function imgLoaded(img, isBroken) {
-        if (img.src === BLANK || $.inArray(img, loaded) !== -1) {
-            return;
-        }
+    // Clear existing tiles
+    tilesContainer.innerHTML = "";
 
-        loaded.push(img);
-        isBroken ? broken.push(img) : proper.push(img);
-        $.data(img, 'imagesLoaded', { isBroken: isBroken, src: img.src });
+    // Create tiles dynamically
+    records.forEach(record => {
+        const tile = document.createElement('li');
+        tile.innerHTML = `
+            <a href="${record.subject_link}" 
+               data-largesrc="${record.subject_image || 'https://via.placeholder.com/150'}" 
+               data-title="${record.subject}" 
+               data-description="${record.description || ''}">
+                <div class="tile">
+                    <div class="product-badge">${record.type.toUpperCase()}</div>
+                    <div class="text-group">
+                        <div class="word subject">${record.subject}</div>
+                        <div class="word predicate">${record.predicate}</div>
+                        <div class="word object">${record.object}</div>
+                        <div class="word type">${record.subtype}</div>
+                        <div class="word relationship">${record.relationship}</div>
+                    </div>
+                </div>
+            </a>
+        `;
+        tilesContainer.appendChild(tile);
+    });
 
-        if (hasNotify) {
-            deferred.notifyWith($(img), [isBroken, $images, $(proper), $(broken)]);
-        }
-
-        if ($images.length === loaded.length) {
-            setTimeout(doneLoading);
-            $images.unbind('.imagesLoaded');
-        }
-    }
-
-    if (!$images.length) {
-        doneLoading();
+    // Reinitialize Grid functionality
+    if (typeof Grid !== "undefined" && typeof Grid.init === "function") {
+        Grid.init();
     } else {
-        $images
-            .bind('load.imagesLoaded error.imagesLoaded', function (event) {
-                imgLoaded(event.target, event.type === 'error');
-            })
-            .each(function (i, el) {
-                var src = el.src;
-                var cached = $.data(el, 'imagesLoaded');
-                if (cached && cached.src === src) {
-                    imgLoaded(el, cached.isBroken);
-                    return;
-                }
-
-                if (el.complete && el.naturalWidth !== undefined) {
-                    imgLoaded(el, el.naturalWidth === 0 || el.naturalHeight === 0);
-                    return;
-                }
-
-                if (el.readyState || el.complete) {
-                    el.src = BLANK;
-                    el.src = src;
-                }
-            });
+        console.error("Grid is not defined or init function is missing.");
     }
+}
 
-    return deferred ? deferred.promise($this) : $this;
-};
-
-// Grid Component
-
-var Grid = (function () {
-    var $selector = '#og-grid',
-        $grid = $($selector),
-        $items = $grid.children('li'),
-        current = -1,
-        previewPos = -1,
-        scrollExtra = 0,
-        marginExpanded = 10,
-        $window = $(window),
-        $body = $('html, body'),
-        transEndEventNames = {
-            WebkitTransition: 'webkitTransitionEnd',
-            MozTransition: 'transitionend',
-            OTransition: 'oTransitionEnd',
-            msTransition: 'MSTransitionEnd',
-            transition: 'transitionend',
-        },
-        transEndEventName = transEndEventNames[Modernizr.prefixed('transition')],
-        support = Modernizr.csstransitions,
-        settings = {
-            minHeight: 500,
-            speed: 350,
-            easing: 'ease',
-            showVisitButton: true,
-        };
-
-    function init(config) {
-        settings = $.extend(true, {}, settings, config);
-        $grid.imagesLoaded(function () {
-            saveItemInfo(true);
-            getWinSize();
-            initEvents();
-        });
-    }
-
-    function addItems($newitems) {
-        $items = $items.add($newitems);
-        $newitems.each(function () {
-            var $item = $(this);
-            $item.data({
-                offsetTop: $item.offset().top,
-                height: $item.height(),
-            });
-        });
-        initItemsEvents($newitems);
-    }
-
-    function saveItemInfo(saveHeight) {
-        $items.each(function () {
-            var $item = $(this);
-            $item.data('offsetTop', $item.offset().top);
-            if (saveHeight) {
-                $item.data('height', $item.height());
-            }
-        });
-    }
-
-    function initEvents() {
-        initItemsEvents($items);
-        $window.on('debouncedresize', function () {
-            scrollExtra = 0;
-            previewPos = -1;
-            saveItemInfo();
-            getWinSize();
-            var preview = $.data(this, 'preview');
-            if (typeof preview != 'undefined') {
-                hidePreview();
-            }
-        });
-    }
-
-    function initItemsEvents($items) {
-        $items
-            .on('click', 'span.og-close', function () {
-                hidePreview();
-                return false;
-            })
-            .children('a')
-            .on('click', function (e) {
-                var $item = $(this).parent();
-                current === $item.index() ? hidePreview() : showPreview($item);
-                return false;
-            });
-    }
-
-    function getWinSize() {
-        winsize = { width: $window.width(), height: $window.height() };
-    }
-   
-    function showPreview($item) {
-        var preview = $.data(this, 'preview'),
-            position = $item.data('offsetTop');
-
-         // Inject dynamic content before the preview is opened
-    if ($item.attr('id') === 'record001') {
-        console.log('Injecting dynamic content for record001.');
-        injectRecordContent(); // Ensure content is loaded dynamically
-    }
-
-        scrollExtra = 0;
-
-        console.log('Expander height before opening:', this.height);
-
-        if (typeof preview != 'undefined') {
-            if (previewPos !== position) {
-                if (position > previewPos) {
-                    scrollExtra = preview.height;
-                }
-                hidePreview();
-            } else {
-                preview.update($item);
-                return false;
-            }
-        }
-
-        previewPos = position;
-        preview = $.data(this, 'preview', new Preview($item));
-
-        console.log('Expander content before opening:', preview.getEl().html());
-
-        preview.open();
-
-        console.log('Expander height after opening:', preview.getEl().css('height'));
-    }
-
-    function hidePreview() {
-        current = -1;
-        var preview = $.data(this, 'preview');
-        preview.close();
-        $.removeData(this, 'preview');
-    }
-
-    function Preview($item) {
-        this.$item = $item;
-        this.expandedIdx = this.$item.index();
-        this.create();
-        this.update();
-    }
-
-    Preview.prototype = {
-        create: function () {
-            this.$title = $('<h3></h3>');
-            this.$description = $('<p></p>');
-            var detailAppends = [this.$title, this.$description];
-
-            if (settings.showVisitButton === true) {
-                this.$href = $('<a href="#">Order Amp</a>');
-                detailAppends.push(this.$href);
-            }
-
-            this.$details = $('<div class="og-details"></div>').append(detailAppends);
-            this.$loading = $('<div class="og-loading"></div>');
-            this.$fullimage = $('<div class="og-fullimg"></div>').append(this.$loading);
-            this.$closePreview = $('<span class="og-close"></span>');
-            this.$previewInner = $('<div class="og-expander-inner"></div>').append(
-                this.$closePreview,
-                this.$fullimage,
-                this.$details
-            );
-            this.$previewEl = $('<div class="og-expander"></div>').append(this.$previewInner);
-
-            this.$item.append(this.getEl());
-
-            if (support) {
-                this.setTransition();
-            }
-        },
-        update: function ($item) {
-            if ($item) {
-                this.$item = $item;
-            }
-
-            if (current !== -1) {
-                var $currentItem = $items.eq(current);
-                $currentItem.removeClass('og-expanded');
-                this.$item.addClass('og-expanded');
-                this.positionPreview();
-            }
-
-            current = this.$item.index();
-
-            var $itemEl = this.$item.children('a'),
-                eldata = {
-                    href: $itemEl.attr('href') || '#',
-                    largesrc: $itemEl.data('largesrc') || '',
-                    title: $itemEl.data('title') || 'No Title Available',
-                    description: $itemEl.data('description') || 'No Description Available',
-                };
-
-            console.log('eldata in update:', eldata);
-
-            this.$title.html(eldata.title);
-            this.$description.html(eldata.description);
-            if (settings.showVisitButton === true) {
-                this.$href.attr('href', eldata.href);
-            }
-
-            var self = this;
-
-            if (typeof self.$largeImg != 'undefined') {
-                self.$largeImg.remove();
-            }
-            if (self.$fullimage.is(':visible')) {
-                this.$loading.show();
-                $('<img/>')
-                    .load(function () {
-                        var $img = $(this);
-                        if ($img.attr('src') === self.$item.children('a').data('largesrc')) {
-                            self.$loading.hide();
-                            self.$fullimage.find('img').remove();
-                            self.$largeImg = $img.fadeIn(350);
-                            self.$fullimage.append(self.$largeImg);
-                        }
-                    })
-                    .attr('src', eldata.largesrc);
-            }
-        },
-        open: function () {
-            setTimeout(
-                $.proxy(function () {
-                    this.setHeights();
-                    this.positionPreview();
-                }, this),
-                25
-            );
-        },
-        close: function () {
-            var self = this,
-                onEndFn = function () {
-                    if (support) {
-                        $(this).off(transEndEventName);
-                    }
-                    self.$item.removeClass('og-expanded');
-                    self.$previewEl.remove();
-                };
-
-            setTimeout(
-                $.proxy(function () {
-                    if (typeof this.$largeImg !== 'undefined') {
-                        this.$largeImg.fadeOut('fast');
-                        this.$largeImg.remove();
-                        console.log('Large image is being removed:', this.$largeImg);
-                    }
-                    this.$previewEl.css('height', 0);
-
-                    var $expandedItem = $items.eq(this.expandedIdx);
-                    $expandedItem.css('height', $expandedItem.data('height')).on(transEndEventName, onEndFn);
-
-                    if (!support) {
-                        onEndFn.call();
-                    }
-                }, this),
-                25
-            );
-
-            return false;
-        },
-
-calcHeight: function () {
-    var contentHeight = this.$previewEl.find('.og-details').outerHeight(true) || settings.minHeight; // Calculate content height
-    this.height = Math.max(contentHeight, settings.minHeight); // Ensure minimum height
-    this.itemHeight = this.height + this.$item.data('height') + marginExpanded;
-    
-    console.log('Calculated Expander Height:', this.height); // Log the calculated height
-},
-
-
-        
-        setHeights: function () {
-            var self = this,
-                onEndFn = function () {
-                    if (support) {
-                        self.$item.off(transEndEventName);
-                    }
-                    self.$item.addClass('og-expanded');
-                };
-
-            this.calcHeight();
-            this.$previewEl.css('height', this.height);
-            this.$item.css('height', this.itemHeight).on(transEndEventName, onEndFn);
-
-            if (!support) {
-                onEndFn.call();
-            }
-        },
-        positionPreview: function () {
-            var position = this.$item.data('offsetTop'),
-                previewOffsetT = this.$previewEl.offset().top - scrollExtra,
-                scrollVal =
-                    this.height + this.$item.data('height') + marginExpanded <= winsize.height
-                        ? position
-                        : this.height < winsize.height
-                        ? previewOffsetT - (winsize.height - this.height)
-                        : previewOffsetT;
-
-            $body.animate({ scrollTop: scrollVal }, settings.speed);
-        },
-        setTransition: function () {
-            this.$previewEl.css('transition', 'height ' + settings.speed + 'ms ' + settings.easing);
-            this.$item.css('transition', 'height ' + settings.speed + 'ms ' + settings.easing);
-        },
-        getEl: function () {
-            return this.$previewEl;
-        },
-    };
-
-    return {
-        init: init,
-        addItems: addItems,
-    };
-})();
-
-         
+// Ensure rendering occurs after DOM is loaded
+document.addEventListener("DOMContentLoaded", function () {
+    renderDynamicGrid();
+});
