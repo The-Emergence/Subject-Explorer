@@ -46,12 +46,16 @@
 		</div>
 
 	<!-- /container -->
-    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    	<script src="js/grid.js"></script>
-    	<script>
-        	$(function() {
-            	Grid.init();
-        	});
-    	</script>
-	</body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="../js/grid.js"></script>
+	<script>
+    	$(function() {
+        	Grid.init();
+
+        	// Attractor-specific behavior
+        	const expander = $('#attractor-expander');
+        	$('.og-close').on('click', () => expander.removeClass('active'));
+    	});
+	</script>
+</body>
 </html>
