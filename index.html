@@ -34,7 +34,7 @@
                 <div class="word object">Warm and Bright Sounds</div>
                 <div class="word type">Guitar amplifiers</div>
                 <div class="word subtype">Blues and Jazz</div>
-                <div class="word relationship">Eric Clapton plays on Layla Album</div>
+                <div class="word relationship">Eric Clapton</div>
             </div>
         </div>
     </a>
@@ -45,27 +45,13 @@
 			</div>
 		</div>
 
-		<!-- Load dependencies -->
-		<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
-		<!-- Load grid.js -->
-		<script src="js/grid.js"></script>
-
-		<!-- Load Dynamic Tiles Script -->
-		<script src="js/dynamictiles.js"></script>
-
-		<!-- Initialize Grid -->
-		<script>
-			document.addEventListener("DOMContentLoaded", function () {
-				// Ensure Grid is initialized properly
-				if (typeof Grid !== "undefined" && typeof Grid.init === "function") {
-					Grid.init();
-					console.log("Grid initialized successfully.");
-				} else {
-					console.error("Grid is not defined or init function is missing.");
-				}
-			});
-		</script>
+	<!-- /container -->
+    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    	<script src="js/grid.js"></script>
+    	<script>
+        	$(function() {
+            	Grid.init();
+        	});
+    	</script>
 	</body>
 </html>
