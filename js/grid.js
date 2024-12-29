@@ -48,15 +48,15 @@ $.fn.imagesLoaded = function(callback) {
 // Main module for managing the grid and expander functionality
 var Grid = (function() {
 	// Global variables and default settings
-	var $selector = '#og-grid',  // Selector for the grid container
-		$grid = $($selector),  // jQuery object for the grid
-		$items = $grid.children('li'),  // Grid items
-		current = -1,  // Tracks the currently expanded item
-		previewPos = -1,  // Position of the currently expanded preview
-		scrollExtra = 0,  // Additional scroll offset
-		marginExpanded = 10,  // Margin for expanded previews
-		$window = $(window),  // Window object
-		$body = $('html, body'),  // Body element for scrolling
+	var $selector = '#og-grid',  // Selector for the grid container
+		$grid = $($selector),  // jQuery object for the grid
+		$items = $grid.children('li'),  // Grid items
+		current = -1,  // Tracks the currently expanded item
+		previewPos = -1,  // Position of the currently expanded preview
+		scrollExtra = 0,  // Additional scroll offset
+		marginExpanded = 10,  // Margin for expanded previews
+		$window = $(window),  // Window object
+		$body = $('html, body'),  // Body element for scrolling
 		transEndEventNames = {
 			// Transition end event names for various browsers
 			'WebkitTransition': 'webkitTransitionEnd',
@@ -66,7 +66,7 @@ var Grid = (function() {
 			'transition': 'transitionend'
 		},
 		transEndEventName = transEndEventNames[Modernizr.prefixed('transition')],
-		support = Modernizr.csstransitions,  // CSS transitions support
+		support = Modernizr.csstransitions,  // CSS transitions support
 		settings = {
 			minHeight: 500,
 			speed: 350,
