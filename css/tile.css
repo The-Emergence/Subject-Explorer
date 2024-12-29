@@ -134,3 +134,25 @@
     background: #fff;
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
 }
+
+
+
+/* For Expander Content Window */
+
+.expander-content {
+  padding: 20px; 
+  background-color: #f0f0f0; 
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 10px; 
+}
+
+.expander-content h3 {
+  margin-bottom: 10px;
+}
+
+/* Optional styles for the links */
+.expander-content a {
+  color: #007bff; 
+  text-decoration: underline;
+}
