@@ -10,7 +10,7 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 async function fetchData() {
   try {
     const { data, error } = await supabase
-      .from('your_table_name')
+      .from('subject_explorer_records')
       .select('*'); 
 
     if (error) {
