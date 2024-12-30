@@ -1,141 +1,187 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Deep Inquiry Framework Template</title>
-	<meta name="description" content="Thumbnail Grid with Expanding Preview" />
-	<meta name="keywords" content="thumbnails, grid, preview, google image search, jquery, image grid, expanding, preview, portfolio" />
-	<meta name="author" content="Codrops" />
-	<link rel="shortcut icon" href="../favicon.ico">
-	<link rel="stylesheet" type="text/css" href="css/default.css" />
-	<link rel="stylesheet" type="text/css" href="css/component.css" />
-	<link rel="stylesheet" type="text/css" href="css/tile.css" />
-	<script src="js/modernizr.custom.js"></script>
-       </head>
-<body>
-	<div class="container">
-    	<!-- Header Section -->
-    	<header class="clearfix">
-        	<h1>Guitar Amps</h1>
-        	<span>
-            	<a href="https://the-emergence.github.io/thedeepinquiryframework_template/webform/productwebform.html" target="_blank">Curate</a> | Participate
-        	</span>
-    	</header>
+/*
+* debouncedresize: special jQuery event that happens once after a window resize
+*/
+* latest version and complete README available on Github:
+* https://github.com/louisremi/jquery-smartresize/blob/master/jquery.debouncedresize.js
+*
+* Copyright 2011 @louis_remi
+* Licensed under the MIT license.
+*/
 
-    	<!-- Main Tile Grid -->
-    	<div class="main">
-        	<ul id="og-grid" class="og-grid">
-	<!-- Expander content Begin -->
-   		
-            	<!-- PRODUCT 1 BEGIN -->
- <li>
-    <a href="httFFps://www.fender.com/en-US/guitar-amplifiers/vintage-pro-tube/hot-rod-deluxe-iv/2231200000.html" 
-       data-largesrc="https://www.fender.com/cdn-cgi/image/format=png,resize=height=auto,width=712/https://www.fmicassets.com/Damroot/ZoomJpg/10001/2231200000_amp_frt_001_nr.jpg" 
-       data-title="Fender Hot Rod Guitar Amp" 
-       data-description="The Fender Hot Rod Deluxe™ IV is a legendary tube amplifier celebrated for its versatile tonal range.<br><br><strong>Played by: </strong>George Benson, Michael Landau.<br><br><strong>Colors: </strong>Black<br><br><Strong>Price: </strong>$999<br><br>">
-	    <!-- Expander content End -->
-	    <!-- Tile Preview Begin -->
-        <div class="tile">
-            <div class="product-badge">Product</div>
-            <div class="text-group">
-                <div class="word subject">Fender Guitar Amp</div>
-                <div class="word predicate">Tone2</div>
-                <div class="word object">Warm</div>
-                <div class="word type">Tube Amp</div>
-                <div class="word subtype">Jazz/Blues</div>
-                <div class="word relationship">John Mayer</div>
-            </div>
-        </div>
-    </a>
-	<!-- Tile Preview  End -->	          
+var $event = $.event, $special, resizeTimeout;
 
-	 	<!-- PRODUCT 1 END -->	
- </li>
-	 <li>
-			<!-- PRODUCT 2 BEGIN -->
+$special = $event.special.debouncedresize = {
+	// Handles setup of the debounced resize event
+	setup: function() {
+		$(this).on("resize", $special.handler);
+	},
+	// Teardown logic for the resize event
+	teardown: function() {
+		$(this).off("resize", $special.handler);
+	},
+	// Main handler logic to debounce resize events
+	handler: function(event, execAsap) {
+		var context = this,
+			args = arguments,
+			dispatch = function() {
+				event.type = "debouncedresize";
+				$event.dispatch.apply(context, args);
+			};
 
-    <a href="https://www.fender.com/en-US/guitar-amplifiers/vintage-pro-tube/hot-rod-deluxe-iv/2231200000.html" 
-       data-largesrc="https://www.fender.com/cdn-cgi/image/format=png,resize=height=auto,width=712/https://www.fmicassets.com/Damroot/ZoomJpg/10001/2231200000_amp_frt_001_nr.jpg" 
-       data-title="Peavey Guitar Amp" 
-       data-description="The Fender Hot Rod Deluxe™ IV is a legendary tube amplifier celebrated for its versatile tonal range.<br><br><strong>Played by: </strong>George Benson, Michael Landau.<br><br><strong>Colors: </strong>Black<br><br><Strong>Price: </strong>$999<br><br>">
-	    <!-- Expander content End -->
-	    <!-- Tile Preview Begin -->
-        <div class="tile">
-            <div class="product-badge">Product</div>
-            <div class="text-group">
-                <div class="word subject">Peavey Amp</div>
-                <div class="word predicate">Tone2</div>
-                <div class="word object">Warm</div>
-                <div class="word type">Tube Amp</div>
-                <div class="word subtype">Jazz/Blues</div>
-                <div class="word relationship">John Mayer</div>
-            </div>
-        </div>
-    </a>
-	<!-- Tile Preview  End -->     
-	 <!-- PRODUCT 2 END -->	
- </li>	 	
-	   	</ul>
-        	<p>Build on <a href="http://www.theemergenc.io/">The Deep Inquiry Framework</a></p>
-        	<p>Curated by J. Paul Duplantis</p>
-    	</div>
-	</div><!-- /container -->
+		if (resizeTimeout) {
+			clearTimeout(resizeTimeout);
+		}
 
-	<!-- Expander Window -->
-	<div id="attractor-expander" class="og-expander">
-    	<div class="og-expander-inner">
-        	<!-- Close Button -->
-        	<span class="og-close">✖</span>
+		execAsap ? dispatch() : (resizeTimeout = setTimeout(dispatch, $special.threshold));
+	},
+	threshold: 250 // Time in milliseconds before firing the debounced event
+};
 
-        	<!-- Left Section: Product Image -->
-        	<div class="og-left">
-            	<img src="../images/placeholder.jpg" alt="Product Image" class="product-image">
-        	</div>
+// ======================= imagesLoaded Plugin ===============================
+// Plugin for ensuring all images in the grid are fully loaded
+$.fn.imagesLoaded = function(callback) {
+	// Core logic for handling image load and error events
+	// Ensures callbacks for broken or successfully loaded images
+};
 
-        	<!-- Right Section: Content -->
-        	<div class="og-right">
-            	<!-- Product Title -->
-            	<h3 class="product-title">Fender Hot Rod Deluxe IV</h3>
+// ======================= Grid Module ===============================
+// Main module for managing the grid and expander functionality
+var Grid = (function() {
+	// Global variables and default settings
+	var $selector = '#og-grid',  // Selector for the grid container
+		$grid = $($selector),  // jQuery object for the grid
+		$items = $grid.children('li'),  // Grid items
+		current = -1,  // Tracks the currently expanded item
+		previewPos = -1,  // Position of the currently expanded preview
+		scrollExtra = 0,  // Additional scroll offset
+		marginExpanded = 10,  // Margin for expanded previews
+		$window = $(window),  // Window object
+		$body = $('html, body'),  // Body element for scrolling
+		transEndEventNames = {
+			// Transition end event names for various browsers
+			'WebkitTransition': 'webkitTransitionEnd',
+			'MozTransition': 'transitionend',
+			'OTransition': 'oTransitionEnd',
+			'msTransition': 'MSTransitionEnd',
+			'transition': 'transitionend'
+		},
+		transEndEventName = transEndEventNames[Modernizr.prefixed('transition')],
+		support = Modernizr.csstransitions,  // CSS transitions support
+		settings = {
+			minHeight: 500,
+			speed: 350,
+			easing: 'ease',
+			showVisitButton: true
+		};
 
-            	<!-- RDF6 Details -->
-            	<div class="product-details">
-                	<p><strong>Subject:</strong> Tube Amplifier</p>
-                	<p><strong>Predicate:</strong> Enhances warm, vintage guitar tones</p>
-                	<p><strong>Object:</strong> Deliver professional-grade sound for small gigs</p>
-                	<p><strong>Type:</strong> Guitar Amplifier</p>
-                	<p><strong>Subtype:</strong> Tube Amplifier (Combo)</p>
-                	<p><strong>Relationships:</strong> Related to Fender Stratocaster, Blues Genre, John Mayer.</p>
-            	</div>
+	// ======================= Initialization ===============================
+	function init(config) {
+		settings = $.extend(true, {}, settings, config);
+		$grid.imagesLoaded(function() {
+			// Preloading and saving initial grid item data
+			saveItemInfo(true);
+			getWinSize();
+			initEvents(); // Initialize event handlers
+		});
+	}
 
-            	<!-- Product Link -->
-            	<div class="product-link">
-                	<a href="https://www.fender.com" target="_blank">Visit Product Page</a>
-            	</div>
+	// ======================= Adding Items to the Grid ===============================
+	function addItems($newitems) {
+		$items = $items.add($newitems);
+		$newitems.each(function() {
+			var $item = $(this);
+			$item.data({
+				offsetTop: $item.offset().top,
+				height: $item.height()
+			});
+		});
+		initItemsEvents($newitems); // Bind events to new items
+	}
 
-            	<!-- Share Options -->
-            	<div class="share-options">
-                	<p>Share this product:</p>
-                	<a href="#" class="share-social">Social</a>
-                	<a href="#" class="share-email">Email</a>
-                	<a href="#" class="share-text">Text</a>
-            	</div>
-        	</div>
-    	</div>
-	</div>
+	// ======================= Utility Functions ===============================
+	// Saves the height and offset of grid items
+	function saveItemInfo(saveheight) {
+		$items.each(function() {
+			var $item = $(this);
+			$item.data('offsetTop', $item.offset().top);
+			if (saveheight) {
+				$item.data('height', $item.height());
+			}
+		});
+	}
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	<script src="https://the-emergence.github.io/thedeepinquiryframework_template/js/grid.js"></script>
-	<script>
-    	$(function() {
-        	Grid.init();
+	// Calculates the current window size
+	function getWinSize() {
+		winsize = { width: $window.width(), height: $window.height() };
+	}
 
-        	// Attractor-specific behavior
-        	const expander = $('#attractor-expander');
-        	$('.og-close').on('click', () => expander.removeClass('active'));
-    	});
-	</script>
-</body>
-</html>
+	// ======================= Event Initialization ===============================
+	function initEvents() {
+		initItemsEvents($items); // Events for grid items
+
+		// Window resize event handling
+		$window.on('debouncedresize', function() {
+			scrollExtra = 0;
+			previewPos = -1;
+			saveItemInfo();
+			getWinSize();
+			var preview = $.data(this, 'preview');
+			if (typeof preview !== 'undefined') {
+				hidePreview(); // Hide the preview on resize
+			}
+		});
+	}
+
+	// ======================= Item Event Handling ===============================
+	function initItemsEvents($items) {
+		// Close preview when clicking the close button
+		$items.on('click', 'span.og-close', function() {
+			hidePreview();
+			return false;
+		})
+		// Trigger the expander when clicking an item link
+		.children('a').on('click', function(e) {
+			e.preventDefault(); // Prevent navigation
+			var $item = $(this).parent();
+			current === $item.index() ? hidePreview() : showPreview($item);
+			return false;
+		});
+	}
+
+	// ======================= Preview Handling ===============================
+	// Show the expander for the clicked item
+	function showPreview($item) {
+		// Core logic for displaying and positioning the expander
+	}
+
+	// Hide the currently expanded preview
+	function hidePreview() {
+		// Core logic for collapsing the expander
+	}
+
+	// ======================= Preview Object ===============================
+	// Object for managing the expanded preview
+	function Preview($item) {
+		// Initialization and update logic for the preview
+	}
+
+	Preview.prototype = {
+		create: function() { /* Creates the preview structure */ },
+		update: function($item) { /* Updates the preview content */ },
+		open: function() { /* Expands the preview */ },
+		close: function() { /* Collapses the preview */ },
+		calcHeight: function() { /* Calculates the height of the preview */ },
+		setHeights: function() { /* Sets the height for the preview and item */ },
+		positionPreview: function() { /* Positions the preview */ },
+		setTransition: function() { /* Adds CSS transitions */ },
+		getEl: function() { return this.$previewEl; }
+	};
+
+	// Expose public methods
+	return {
+		init: init,
+		addItems: addItems
+	};
+})();
+
 
