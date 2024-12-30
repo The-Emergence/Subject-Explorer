@@ -159,44 +159,78 @@ var Grid = (function() {
 
         // If a preview exists and previewPos is different (different item clicked) then close
         if (typeof preview !== 'undefined') {
-            // ... (Your existing code to close the preview) ...
+            // Close existing preview
+            if (current !== -1) {
+                hidePreview();
+            } else {
+                preview.update($item);
+                return false;
+            }
         }
 
         // Update preview if it exists, or create a new one
         (typeof preview === 'undefined') ? (preview = new Preview($item, function() {
-            showPreview($item); // ... (Your existing code to show the preview) ...
-        })) : (preview.update($item)); // ... (Your existing code to update the preview) ...
+            showPreview($item);
+        })) : (preview.update($item));
 
         preview = new Preview($item, function() {
-            // ... (Your existing code) ...
-
+            var $itemEl = $item.children('a'),
+                eldata = $itemEl.data();
+            
             // Use the existing 'og-expander' div from the HTML
-            preview.$previewEl = $item.find('.og-expander'); 
+            preview.$previewEl = $item.find('.og-expander');
 
-            // ... (The rest of your existing code to open and position the preview) ...
+            preview.open();
         });
     }
 
     // Hide the currently expanded preview
     function hidePreview() {
-        // ... (Your existing code) ...
+        current = -1;
+        var preview = $.data(this, 'preview');
+        preview.close();
+        $.removeData(this, 'preview');
     }
 
     // ======================= Preview Object ===============================
     // Object for managing the expanded preview
     function Preview($item, callback) {
-        // ... (Your existing code) ...
+        this.$item = $item;
+        this.expandedIdx = this.$item.index();
+        this.$previewEl = null;
+        this.create();
+        this.update($item);
+        this.setHeights();
+        this.positionPreview();
+        this.setTransition();
+        this.callback = callback;
     }
 
     Preview.prototype = {
-        create: function() { /* Creates the preview structure */ },
-        update: function($item) { /* Updates the preview content */ },
-        open: function() { /* Expands the preview */ },
-        close: function() { /* Collapses the preview */ },
-        calcHeight: function() { /* Calculates the height of the preview */ },
-        setHeights: function() { /* Sets the height for the preview and item */ },
-        positionPreview: function() { /* Positions the preview */ },
-        setTransition: function() { /* Adds CSS transitions */ },
+        create: function() {
+            // ... unchanged ...
+        },
+        update: function($item) {
+            // ... unchanged ...
+        },
+        open: function() {
+            // ... unchanged ...
+        },
+        close: function() {
+            // ... unchanged ...
+        },
+        calcHeight: function() {
+            // ... unchanged ...
+        },
+        setHeights: function() {
+            // ... unchanged ...
+        },
+        positionPreview: function() {
+            // ... unchanged ...
+        },
+        setTransition: function() {
+            // ... unchanged ...
+        },
         getEl: function() {
             return this.$previewEl;
         }
