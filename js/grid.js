@@ -1,11 +1,5 @@
 /*
 * debouncedresize: special jQuery event that happens once after a window resize
-*
-* latest version and complete README available on Github:
-* https://github.com/louisremi/jquery-smartresize/blob/master/jquery.debouncedresize.js
-*
-* Copyright 2011 @louis_remi
-* Licensed under the MIT license.
 */
 var $event = $.event,
 $special,
@@ -46,7 +40,6 @@ var Grid = (function() {
         $window = $(window),
         winsize,
         $body = $('html, body'),
-        // Transitionend event names
         transEndEventNames = {
             'WebkitTransition': 'webkitTransitionEnd',
             'MozTransition': 'transitionend',
@@ -143,7 +136,7 @@ var Grid = (function() {
         $.removeData(this, 'preview');
     }
 
-    // The Preview obj
+    // Preview obj
     function Preview($item) {
         this.$item = $item;
         this.expandedIdx = this.$item.index();
@@ -153,46 +146,59 @@ var Grid = (function() {
 
     Preview.prototype = {
         create: function() {
-            // Create the basic structure
-            this.$details = $('<div class="og-details"></div>');
-            
-            // Get the ID or reference from the trigger
-            var contentId = this.$item.find('a').data('content-id');
-            var self = this;  // Store reference to 'this' for use in callback
-            
-            // Dynamic content injection
-            $.get('/api/content/' + contentId, function(response) {
-                // Inject the fetched content
-                self.$details.html(response.content);
-            }).fail(function() {
-                // Fallback content if AJAX fails
-                self.$details.html('<p>Content could not be loaded.</p>');
-            });
-
-            // Create loading indicator
+            // Create base structure
+            this.$title = $('<h3></h3>');
+            this.$description = $('<p></p>');
+            this.$href = $('<a href="#">Visit website</a>');
+            this.$details = $('<div class="og-details"></div>').append(this.$title, this.$description, this.$href);
             this.$loading = $('<div class="og-loading"></div>');
-            
-            // Create image container
             this.$fullimg = $('<div class="og-fullimg"></div>').append(this.$loading);
-            
-            // Create close button
             this.$closePreview = $('<span class="og-close"></span>');
+            this.$previewInner = $('<div class="og-expander-inner"></div>').append(this.$closePreview, this.$fullimg, this.$details);
+            this.$previewEl = $('<div class="og-expander"></div>').append(this.$previewInner);
+
+            // Get data attributes
+            var $itemEl = this.$item.find('a');
+            var contentId = $itemEl.data('content-id');
             
-            // Create the preview inner container
-            this.$previewInner = $('<div class="og-expander-inner"></div>')
-                .append(this.$closePreview, this.$fullimg, this.$details);
-            
-            // Create the preview element
-            this.$previewEl = $('<div class="og-expander"></div>')
-                .append(this.$previewInner);
+            // If we have a content ID, try to load custom content
+            if(contentId) {
+                var self = this;
+                // First populate with standard content
+                this.loadDefaultContent($itemEl);
+                
+                // Then try to load custom content
+                $.get('/api/content/' + contentId, function(response) {
+                    if(response && response.content) {
+                        // Replace description with custom content
+                        self.$description.html(response.content);
+                    }
+                });
+            } else {
+                // Just load default content
+                this.loadDefaultContent($itemEl);
+            }
 
             // Append preview element to the item
             this.$item.append(this.getEl());
 
-            // Set transitions
             if(support) {
                 this.setTransition();
             }
+        },
+
+        loadDefaultContent: function($itemEl) {
+            // Load the default data from data attributes
+            var eldata = {
+                href: $itemEl.attr('href'),
+                largesrc: $itemEl.data('largesrc'),
+                title: $itemEl.data('title'),
+                description: $itemEl.data('description')
+            };
+
+            this.$title.html(eldata.title);
+            this.$description.html(eldata.description);
+            this.$href.attr('href', eldata.href);
         },
 
         update: function($item) {
@@ -200,7 +206,6 @@ var Grid = (function() {
                 this.$item = $item;
             }
 
-            // If already expanded
             if(current !== -1) {
                 var $currentItem = $grid.children('li').eq(current);
                 $currentItem.removeClass('og-expanded');
@@ -210,9 +215,8 @@ var Grid = (function() {
 
             current = this.$item.index();
 
-            // Load image if exists
-            var $itemEl = this.$item,
-                largesrc = $itemEl.find('a').data('largesrc');
+            var $itemEl = this.$item.find('a'),
+                largesrc = $itemEl.data('largesrc');
 
             if(largesrc) {
                 var self = this;
