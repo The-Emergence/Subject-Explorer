@@ -1,187 +1,329 @@
 /*
 * debouncedresize: special jQuery event that happens once after a window resize
-*/
-* latest version and complete README available on Github:
-* https://github.com/louisremi/jquery-smartresize/blob/master/jquery.debouncedresize.js
 *
 * Copyright 2011 @louis_remi
 * Licensed under the MIT license.
 */
-
-var $event = $.event, $special, resizeTimeout;
+var $event = $.event,
+$special,
+resizeTimeout;
 
 $special = $event.special.debouncedresize = {
-	// Handles setup of the debounced resize event
-	setup: function() {
-		$(this).on("resize", $special.handler);
-	},
-	// Teardown logic for the resize event
-	teardown: function() {
-		$(this).off("resize", $special.handler);
-	},
-	// Main handler logic to debounce resize events
-	handler: function(event, execAsap) {
-		var context = this,
-			args = arguments,
-			dispatch = function() {
-				event.type = "debouncedresize";
-				$event.dispatch.apply(context, args);
-			};
+    setup: function() {
+        $(this).on("resize", $special.handler);
+    },
+    teardown: function() {
+        $(this).off("resize", $special.handler);
+    },
+    handler: function(event, execAsap) {
+        var context = this,
+            args = arguments,
+            dispatch = function() {
+                event.type = "debouncedresize";
+                $event.dispatch.apply(context, args);
+            };
 
-		if (resizeTimeout) {
-			clearTimeout(resizeTimeout);
-		}
+        if (resizeTimeout) {
+            clearTimeout(resizeTimeout);
+        }
 
-		execAsap ? dispatch() : (resizeTimeout = setTimeout(dispatch, $special.threshold));
-	},
-	threshold: 250 // Time in milliseconds before firing the debounced event
+        execAsap ? dispatch() : resizeTimeout = setTimeout(dispatch, $special.threshold);
+    },
+    threshold: 250
 };
 
-// ======================= imagesLoaded Plugin ===============================
-// Plugin for ensuring all images in the grid are fully loaded
-$.fn.imagesLoaded = function(callback) {
-	// Core logic for handling image load and error events
-	// Ensures callbacks for broken or successfully loaded images
-};
-
-// ======================= Grid Module ===============================
-// Main module for managing the grid and expander functionality
+// The Grid object
 var Grid = (function() {
-	// Global variables and default settings
-	var $selector = '#og-grid',  // Selector for the grid container
-		$grid = $($selector),  // jQuery object for the grid
-		$items = $grid.children('li'),  // Grid items
-		current = -1,  // Tracks the currently expanded item
-		previewPos = -1,  // Position of the currently expanded preview
-		scrollExtra = 0,  // Additional scroll offset
-		marginExpanded = 10,  // Margin for expanded previews
-		$window = $(window),  // Window object
-		$body = $('html, body'),  // Body element for scrolling
-		transEndEventNames = {
-			// Transition end event names for various browsers
-			'WebkitTransition': 'webkitTransitionEnd',
-			'MozTransition': 'transitionend',
-			'OTransition': 'oTransitionEnd',
-			'msTransition': 'MSTransitionEnd',
-			'transition': 'transitionend'
-		},
-		transEndEventName = transEndEventNames[Modernizr.prefixed('transition')],
-		support = Modernizr.csstransitions,  // CSS transitions support
-		settings = {
-			minHeight: 500,
-			speed: 350,
-			easing: 'ease',
-			showVisitButton: true
-		};
 
-	// ======================= Initialization ===============================
-	function init(config) {
-		settings = $.extend(true, {}, settings, config);
-		$grid.imagesLoaded(function() {
-			// Preloading and saving initial grid item data
-			saveItemInfo(true);
-			getWinSize();
-			initEvents(); // Initialize event handlers
-		});
-	}
+    // List of items
+    var $grid = $('#og-grid'),
+        // Current expanded item's index
+        current = -1,
+        // Position of preview
+        previewPos = -1,
+        // Extra window scroll for preview
+        scrollExtra = 0,
+        // Extra margin when expanded (between preview overlay and items)
+        marginExpanded = 10,
+        $window = $(window),
+        winsize,
+        $body = $('html, body'),
+        // Transitionend event name
+        transEndEventNames = {
+            'WebkitTransition': 'webkitTransitionEnd',
+            'MozTransition': 'transitionend',
+            'OTransition': 'oTransitionEnd',
+            'msTransition': 'MSTransitionEnd',
+            'transition': 'transitionend'
+        },
+        transEndEventName = transEndEventNames[Modernizr.prefixed('transition')],
+        // Support for transitions
+        support = Modernizr.csstransitions,
+        // Default settings
+        settings = {
+            minHeight: 500,
+            speed: 350,
+            easing: 'ease'
+        };
 
-	// ======================= Adding Items to the Grid ===============================
-	function addItems($newitems) {
-		$items = $items.add($newitems);
-		$newitems.each(function() {
-			var $item = $(this);
-			$item.data({
-				offsetTop: $item.offset().top,
-				height: $item.height()
-			});
-		});
-		initItemsEvents($newitems); // Bind events to new items
-	}
+    function init(config) {
+        // Apply new settings
+        settings = $.extend(true, {}, settings, config);
 
-	// ======================= Utility Functions ===============================
-	// Saves the height and offset of grid items
-	function saveItemInfo(saveheight) {
-		$items.each(function() {
-			var $item = $(this);
-			$item.data('offsetTop', $item.offset().top);
-			if (saveheight) {
-				$item.data('height', $item.height());
-			}
-		});
-	}
+        // Get all items
+        $grid.find('li').each(function() {
+            var $item = $(this);
+            $item.data({
+                offsetTop: $item.offset().top,
+                height: $item.height()
+            });
+        });
 
-	// Calculates the current window size
-	function getWinSize() {
-		winsize = { width: $window.width(), height: $window.height() };
-	}
+        // Get window size
+        getWinSize();
+        // Initialize some events
+        initEvents();
+    }
 
-	// ======================= Event Initialization ===============================
-	function initEvents() {
-		initItemsEvents($items); // Events for grid items
+    function getWinSize() {
+        winsize = { width: $window.width(), height: $window.height() };
+    }
 
-		// Window resize event handling
-		$window.on('debouncedresize', function() {
-			scrollExtra = 0;
-			previewPos = -1;
-			saveItemInfo();
-			getWinSize();
-			var preview = $.data(this, 'preview');
-			if (typeof preview !== 'undefined') {
-				hidePreview(); // Hide the preview on resize
-			}
-		});
-	}
+    function initEvents() {
+        // Window resize event
+        $window.on('debouncedresize', function() {
+            scrollExtra = 0;
+            previewPos = -1;
+            // Save item's offset
+            saveItemInfo();
+            getWinSize();
+            var preview = $.data(this, 'preview');
+            if (typeof preview != 'undefined') {
+                hidePreview();
+            }
+        });
 
-	// ======================= Item Event Handling ===============================
-	function initItemsEvents($items) {
-		// Close preview when clicking the close button
-		$items.on('click', 'span.og-close', function() {
-			hidePreview();
-			return false;
-		})
-		// Trigger the expander when clicking an item link
-		.children('a').on('click', function(e) {
-			e.preventDefault(); // Prevent navigation
-			var $item = $(this).parent();
-			current === $item.index() ? hidePreview() : showPreview($item);
-			return false;
-		});
-	}
+        // Initialize item events
+        initItemsEvents($grid.children('li'));
+    }
 
-	// ======================= Preview Handling ===============================
-	// Show the expander for the clicked item
-	function showPreview($item) {
-		// Core logic for displaying and positioning the expander
-	}
+    function initItemsEvents($items) {
+        $items.each(function() {
+            var $item = $(this);
+            
+            // Click event on grid-trigger
+            $item.on('click', '.grid-trigger', function(e) {
+                e.preventDefault();
+                if (current === $item.index()) {
+                    hidePreview();
+                } else {
+                    showPreview($item);
+                }
+                return false;
+            });
+            
+            // Close button click event
+            $item.on('click', '.og-close', function() {
+                hidePreview();
+                return false;
+            });
+        });
+    }
 
-	// Hide the currently expanded preview
-	function hidePreview() {
-		// Core logic for collapsing the expander
-	}
+    function saveItemInfo(saveheight) {
+        $grid.children('li').each(function() {
+            var $item = $(this);
+            $item.data('offsetTop', $item.offset().top);
+            if (saveheight) {
+                $item.data('height', $item.height());
+            }
+        });
+    }
 
-	// ======================= Preview Object ===============================
-	// Object for managing the expanded preview
-	function Preview($item) {
-		// Initialization and update logic for the preview
-	}
+    function showPreview($item) {
+        var preview = $.data(this, 'preview'),
+            position = $item.data('offsetTop');
 
-	Preview.prototype = {
-		create: function() { /* Creates the preview structure */ },
-		update: function($item) { /* Updates the preview content */ },
-		open: function() { /* Expands the preview */ },
-		close: function() { /* Collapses the preview */ },
-		calcHeight: function() { /* Calculates the height of the preview */ },
-		setHeights: function() { /* Sets the height for the preview and item */ },
-		positionPreview: function() { /* Positions the preview */ },
-		setTransition: function() { /* Adds CSS transitions */ },
-		getEl: function() { return this.$previewEl; }
-	};
+        scrollExtra = 0;
 
-	// Expose public methods
-	return {
-		init: init,
-		addItems: addItems
-	};
+        // If a preview exists and is not the current one
+        if (typeof preview != 'undefined') {
+            // Update height of wrap
+            $item.data('height', $item.height());
+            // If position changed
+            if (previewPos !== position) {
+                // Close preview
+                hidePreview();
+            }
+            else {
+                preview.update($item);
+                return false;
+            }
+        }
+
+        // Create new preview
+        preview = $.data(this, 'preview', new Preview($item));
+        // Position preview
+        preview.open();
+    }
+
+    function hidePreview() {
+        current = -1;
+        var preview = $.data(this, 'preview');
+        preview.close();
+        $.removeData(this, 'preview');
+    }
+
+    // The preview obj / overlay
+    function Preview($item) {
+        this.$item = $item;
+        this.expandedIdx = this.$item.index();
+        this.create();
+        this.update();
+    }
+
+    Preview.prototype = {
+        create: function() {
+            // Create Preview structure
+            this.$title = $('<h3></h3>');
+            this.$description = $('<p></p>');
+            this.$href = $('<a href="#">Visit website</a>');
+            this.$details = $('<div class="og-details"></div>').append(this.$title, this.$description, this.$href);
+            this.$loading = $('<div class="og-loading"></div>');
+            this.$fullimage = $('<div class="og-fullimg"></div>').append(this.$loading);
+            this.$closePreview = $('<span class="og-close"></span>');
+            this.$previewInner = $('<div class="og-expander-inner"></div>').append(this.$closePreview, this.$fullimage, this.$details);
+            this.$previewEl = $('<div class="og-expander"></div>').append(this.$previewInner);
+            // Append preview element to the item
+            this.$item.append(this.getEl());
+            // Set the transitions
+            if (support) {
+                this.setTransition();
+            }
+        },
+        update: function($item) {
+            if ($item) {
+                this.$item = $item;
+            }
+            
+            // If already expanded, remove class
+            if (current !== -1) {
+                var $currentItem = $grid.children('li').eq(current);
+                $currentItem.removeClass('og-expanded');
+                this.$item.addClass('og-expanded');
+                this.positionPreview();
+            }
+
+            // Update current value
+            current = this.$item.index();
+            
+            // Update preview's content
+            var $itemEl = this.$item;
+            
+            // Get data attributes
+            var eldata = {
+                href: $itemEl.data('href'),
+                largesrc: $itemEl.data('largesrc'),
+                title: $itemEl.data('title'),
+                description: $itemEl.data('description')
+            };
+
+            this.$title.html(eldata.title);
+            this.$description.html(eldata.description);
+            this.$href.attr('href', eldata.href);
+
+            var self = this;
+            
+            // Remove loading indicator
+            if (self.$loading.is(':visible')) {
+                self.$loading.hide();
+            }
+            
+            // Set image
+            if (self.$fullimage.is(':visible')) {
+                $('<img/>').load(function() {
+                    var $img = $(this);
+                    if ($img.attr('src') === self.$item.data('largesrc')) {
+                        self.$loading.hide();
+                        self.$fullimage.find('img').remove();
+                        self.$fullimage.append($img);
+                    }
+                }).attr('src', eldata.largesrc);    
+            }
+        },
+        open: function() {
+            setTimeout($.proxy(function() {
+                this.setHeights();
+                this.positionPreview();
+            }, this), 25);
+        },
+        close: function() {
+            var self = this,
+                onEndFn = function() {
+                    if (support) {
+                        $(this).off(transEndEventName);
+                    }
+                    self.$item.removeClass('og-expanded');
+                    self.$previewEl.remove();
+                };
+
+            setTimeout($.proxy(function() {
+                if (support) {
+                    self.$item.css('height', self.$item.data('height')).on(transEndEventName, onEndFn);
+                }
+                else {
+                    onEndFn.call();
+                }
+            }, this), 25);
+            
+            return false;
+        },
+        calcHeight: function() {
+            var heightPreview = winsize.height - this.$item.data('height') - marginExpanded,
+                itemHeight = winsize.height;
+
+            if (heightPreview < settings.minHeight) {
+                heightPreview = settings.minHeight;
+                itemHeight = settings.minHeight + this.$item.data('height') + marginExpanded;
+            }
+
+            this.height = heightPreview;
+            this.itemHeight = itemHeight;
+        },
+        setHeights: function() {
+            var self = this,
+                onEndFn = function() {
+                    if (support) {
+                        self.$item.off(transEndEventName);
+                    }
+                    self.$item.addClass('og-expanded');
+                };
+
+            this.calcHeight();
+            this.$previewEl.css('height', this.height);
+            this.$item.css('height', this.itemHeight).on(transEndEventName, onEndFn);
+        },
+        positionPreview: function() {
+            var position = this.$item.data('offsetTop'),
+                previewOffsetT = this.$previewEl.offset().top - scrollExtra,
+                scrollVal = this.height + this.$item.data('height') + marginExpanded <= winsize.height ? position : this.height < winsize.height ? previewOffsetT - (winsize.height - this.height) : previewOffsetT;
+            
+            $body.animate({ scrollTop: scrollVal }, settings.speed);
+        },
+        setTransition: function() {
+            this.$previewEl.css('transition', 'height ' + settings.speed + 'ms ' + settings.easing);
+            this.$item.css('transition', 'height ' + settings.speed + 'ms ' + settings.easing);
+        },
+        getEl: function() {
+            return this.$previewEl;
+        }
+    };
+
+    return {
+        init: init,
+        addItems: function($newitems) {
+            $grid.append($newitems);
+            initItemsEvents($newitems);
+        }
+    };
 })();
-
-
