@@ -147,36 +147,25 @@ var Grid = (function() {
     Preview.prototype = {
         create: function() {
             // Create base structure
-            this.$title = $('<h3></h3>');
-            this.$description = $('<p></p>');
-            this.$href = $('<a href="#">Visit website</a>');
-            this.$details = $('<div class="og-details"></div>').append(this.$title, this.$description, this.$href);
+            this.$details = $('<div class="og-details"></div>');
             this.$loading = $('<div class="og-loading"></div>');
             this.$fullimg = $('<div class="og-fullimg"></div>').append(this.$loading);
             this.$closePreview = $('<span class="og-close"></span>');
             this.$previewInner = $('<div class="og-expander-inner"></div>').append(this.$closePreview, this.$fullimg, this.$details);
             this.$previewEl = $('<div class="og-expander"></div>').append(this.$previewInner);
 
-            // Get data attributes
+            // Get template ID from data attribute
             var $itemEl = this.$item.find('a');
-            var contentId = $itemEl.data('content-id');
+            var templateId = $itemEl.data('template-id');
             
-            // If we have a content ID, try to load custom content
-            if(contentId) {
-                var self = this;
-                // First populate with standard content
-                this.loadDefaultContent($itemEl);
-                
-                // Then try to load custom content
-                $.get('/api/content/' + contentId, function(response) {
-                    if(response && response.content) {
-                        // Replace description with custom content
-                        self.$description.html(response.content);
-                    }
-                });
-            } else {
-                // Just load default content
-                this.loadDefaultContent($itemEl);
+            // Load content from template if it exists
+            if(templateId) {
+                var $template = $('#content-' + templateId);
+                if($template.length) {
+                    // Clone the template content to preserve the original
+                    var $content = $template.clone().show();
+                    this.$details.html($content);
+                }
             }
 
             // Append preview element to the item
@@ -185,20 +174,6 @@ var Grid = (function() {
             if(support) {
                 this.setTransition();
             }
-        },
-
-        loadDefaultContent: function($itemEl) {
-            // Load the default data from data attributes
-            var eldata = {
-                href: $itemEl.attr('href'),
-                largesrc: $itemEl.data('largesrc'),
-                title: $itemEl.data('title'),
-                description: $itemEl.data('description')
-            };
-
-            this.$title.html(eldata.title);
-            this.$description.html(eldata.description);
-            this.$href.attr('href', eldata.href);
         },
 
         update: function($item) {
@@ -215,6 +190,7 @@ var Grid = (function() {
 
             current = this.$item.index();
 
+            // Update image if it exists
             var $itemEl = this.$item.find('a'),
                 largesrc = $itemEl.data('largesrc');
 
