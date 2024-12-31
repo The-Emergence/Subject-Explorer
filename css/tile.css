@@ -1,3 +1,8 @@
+/* Grid Item Base Styles */
+.grid-item {
+    position: relative;
+}
+
 /* Basic tile styling */
 .tile {
     width: 220px;
@@ -14,10 +19,26 @@
     position: relative;
     background: #f9f9f9;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
-/* Badge styling remains unchanged */
-.person-badge, .provider-badge, .product-badge, .insight-badge {
+/* Grid trigger styles */
+.grid-trigger {
+    cursor: pointer;
+    display: block;
+}
+
+.grid-trigger:hover .tile {
+    background: #fff;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Badge styling */
+.person-badge, 
+.provider-badge, 
+.product-badge, 
+.insight-badge {
     position: absolute;
     top: 10px;
     left: 10px;
@@ -29,7 +50,7 @@
     border-radius: 4px;
 }
 
-/* Grouping text styling for bottom alignment */
+/* Grouping text styling */
 .tile .text-group {
     margin-bottom: 15px;
     display: flex;
@@ -41,8 +62,8 @@
 .word {
     margin: 5px 0;
     font-family: Arial, sans-serif;
-    position: relative; /* Required for pseudo-elements */
-    padding-left: 25px; /* Increase padding to accommodate bars */
+    position: relative;
+    padding-left: 25px;
     padding-right: 25px;
     text-align: center;
 }
@@ -58,15 +79,15 @@
     transform: translateY(-50%);
     width: 10px;
     height: 4px;
-    background-color: #6A0572; /* Deep Purple for Class */
+    background-color: #6A0572;
 }
 
 .word.class::before {
-    left: 5px; /* 3px gap from the text */
+    left: 5px;
 }
 
 .word.class::after {
-    right: 5px; /* 3px gap from the text */
+    right: 5px;
 }
 
 /* Subject: Horizontal bars */
@@ -78,7 +99,7 @@
     transform: translateY(-50%);
     width: 10px;
     height: 4px;
-    background-color: #2a9d8f; /* Teal for Subject */
+    background-color: #2a9d8f;
 }
 
 .word.subject::before {
@@ -89,70 +110,137 @@
     right: 5px;
 }
 
-/* Breadcrumb: Horizontal bars */
-.word.breadcrumb::before,
-.word.breadcrumb::after {
+/* Predicate: Horizontal bars */
+.word.predicate::before,
+.word.predicate::after {
     content: '';
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     width: 10px;
     height: 4px;
-    background-color: #e76f51; /* Coral for Breadcrumb */
+    background-color: #e9c46a;
 }
 
-.word.breadcrumb::before {
+.word.predicate::before {
     left: 5px;
 }
 
-.word.breadcrumb::after {
+.word.predicate::after {
     right: 5px;
 }
 
-/* Color Word: Horizontal bars */
-.word.colorword::before,
-.word.colorword::after {
+/* Object: Horizontal bars */
+.word.object::before,
+.word.object::after {
     content: '';
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     width: 10px;
     height: 4px;
-    background-color: #f4a261; /* Warm Yellow for Color Words */
+    background-color: #e76f51;
 }
 
-.word.colorword::before {
+.word.object::before {
     left: 5px;
 }
 
-.word.colorword::after {
+.word.object::after {
     right: 5px;
 }
 
-/* Hover effect for better visibility */
-.tile:hover {
-    background: #fff;
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+/* Type: Horizontal bars */
+.word.type::before,
+.word.type::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 4px;
+    background-color: #264653;
 }
 
+.word.type::before {
+    left: 5px;
+}
 
+.word.type::after {
+    right: 5px;
+}
 
-/* For Expander Content Window */
+/* Subtype: Horizontal bars */
+.word.subtype::before,
+.word.subtype::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 4px;
+    background-color: #2a9d8f;
+}
 
+.word.subtype::before {
+    left: 5px;
+}
+
+.word.subtype::after {
+    right: 5px;
+}
+
+/* Relationship: Horizontal bars */
+.word.relationship::before,
+.word.relationship::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 4px;
+    background-color: #f4a261;
+}
+
+.word.relationship::before {
+    left: 5px;
+}
+
+.word.relationship::after {
+    right: 5px;
+}
+
+/* Expander Content Window Styles */
 .expander-content {
-  padding: 20px; 
-  background-color: #f0f0f0; 
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-top: 10px; 
+    padding: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 10px;
 }
 
 .expander-content h3 {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
-/* Optional styles for the links */
 .expander-content a {
-  color: #007bff; 
-  text-decoration: underline;
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 650px) {
+    .tile {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .text-group {
+        font-size: 14px;
+    }
+    
+    .word {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
 }
